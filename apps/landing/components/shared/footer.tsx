@@ -15,7 +15,7 @@ const communityLinks = [
 export function Footer() {
   return (
     <footer
-      className="px-[var(--content-padding-x)] py-16"
+      className="relative z-10 px-[var(--content-padding-x)] py-16 bg-[var(--bg-primary)]"
       style={{ borderTop: "1px solid var(--border-default)" }}
     >
       <div className="mx-auto max-w-[var(--content-max-width)]">

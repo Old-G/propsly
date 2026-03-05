@@ -7,7 +7,7 @@ import { Glow } from "@/components/shared/glow";
 
 export function FinalCTA() {
   return (
-    <section className="relative py-[var(--section-padding-y-mobile)] md:py-[var(--section-padding-y)] px-[var(--content-padding-x)] overflow-hidden">
+    <section className="relative z-10 py-[var(--section-padding-y-mobile)] md:py-[var(--section-padding-y)] px-[var(--content-padding-x)] overflow-hidden bg-[var(--bg-primary)]">
       <motion.div
         variants={staggerContainer}
         initial="hidden"

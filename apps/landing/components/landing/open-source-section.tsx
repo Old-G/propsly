@@ -5,7 +5,7 @@ import { TerminalBlock } from "./terminal-block";
 
 export function OpenSourceSection() {
   return (
-    <SectionWrapper alt>
+    <SectionWrapper>
       <div className="text-center">
         <p className="section-label">OPEN SOURCE</p>
         <h2 className="heading-display text-3xl sm:text-4xl md:text-5xl">

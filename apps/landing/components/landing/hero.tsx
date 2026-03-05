@@ -8,7 +8,7 @@ import { HeroAnimation } from "./hero-animation";
 
 export function Hero() {
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-24 pb-16 px-6">
+    <section className="relative z-10 min-h-screen flex flex-col items-center justify-center overflow-hidden pt-24 pb-16 px-6">
       <motion.div
         variants={staggerContainer}
         initial="hidden"

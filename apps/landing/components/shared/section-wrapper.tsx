@@ -25,8 +25,8 @@ export function SectionWrapper({
       whileInView="visible"
       viewport={{ once: true, margin: "-100px" }}
       className={cn(
-        "py-[var(--section-padding-y-mobile)] md:py-[var(--section-padding-y)] px-[var(--content-padding-x)]",
-        alt && "bg-[var(--bg-section-alt)]",
+        "relative z-10 py-[var(--section-padding-y-mobile)] md:py-[var(--section-padding-y)] px-[var(--content-padding-x)]",
+        alt ? "bg-[var(--bg-section-alt)]" : "bg-[var(--bg-primary)]",
         className
       )}
     >

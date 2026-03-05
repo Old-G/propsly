@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Header } from "@/components/shared/header";
 import { Footer } from "@/components/shared/footer";
-import { getAllPosts } from "@/lib/blog";
-import { BlogCard } from "@/components/blog/blog-card";
+import { getPaginatedPosts, POSTS_PER_PAGE } from "@/lib/blog";
+import { BlogList } from "@/components/blog/blog-list";
 
 export const metadata: Metadata = {
   title: "Blog — Propsly",
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function BlogPage() {
-  const posts = await getAllPosts();
+  const { posts, hasMore } = await getPaginatedPosts(0, POSTS_PER_PAGE);
 
   return (
     <>
@@ -24,23 +24,7 @@ export default async function BlogPage() {
           Insights on proposals, pricing, and winning more clients.
         </p>
 
-        {posts.length === 0 && (
-          <p className="text-[var(--text-tertiary)]">No posts yet. Check back soon.</p>
-        )}
-
-        {posts.length > 0 && (
-          <div className="space-y-6">
-            <BlogCard post={posts[0]} featured />
-
-            {posts.length > 1 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {posts.slice(1).map((post) => (
-                  <BlogCard key={post.slug} post={post} />
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+        <BlogList initialPosts={posts} initialHasMore={hasMore} />
       </main>
       <Footer />
     </>

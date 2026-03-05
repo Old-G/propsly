@@ -3,6 +3,7 @@ import { Instrument_Serif } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { Toaster } from "sonner";
+import { Analytics } from "@vercel/analytics/next";
 import { GrainOverlay } from "@/components/shared/grain-overlay";
 import "./globals.css";
 
@@ -47,6 +48,7 @@ export default function RootLayout({
       >
         {children}
         <Toaster theme="dark" />
+        <Analytics />
         <GrainOverlay />
       </body>
     </html>

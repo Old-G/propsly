@@ -102,7 +102,7 @@ export function FeaturesTabs() {
         onMouseLeave={() => setPaused(false)}
       >
         {/* Tab list */}
-        <div className="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-2 md:pb-0 md:w-[280px] shrink-0">
+        <div className="flex md:flex-col gap-1.5 sm:gap-2 overflow-x-auto md:overflow-visible pb-2 md:pb-0 md:w-[280px] shrink-0 scrollbar-none">
           {features.map((feature, i) => {
             const isActive = active === i;
             const Icon = feature.icon;
@@ -142,7 +142,7 @@ export function FeaturesTabs() {
         </div>
 
         {/* Preview area */}
-        <div className="flex-1 rounded-xl border border-[var(--border-default)] bg-[var(--bg-surface)] p-6 min-h-[400px] relative overflow-hidden">
+        <div className="flex-1 rounded-xl border border-[var(--border-default)] bg-[var(--bg-surface)] p-4 sm:p-6 min-h-[280px] sm:min-h-[400px] relative overflow-hidden">
           <AnimatePresence mode="wait">
             <motion.div
               key={active}

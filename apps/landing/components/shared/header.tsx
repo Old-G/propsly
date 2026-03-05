@@ -86,7 +86,7 @@ export function Header() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <nav className="md:hidden absolute top-full left-0 right-0 bg-[var(--bg-primary)] border-b border-[var(--border-default)] px-[var(--content-padding-x)] py-6 flex flex-col gap-4">
+        <nav className="md:hidden absolute top-full left-0 right-0 z-50 bg-[var(--bg-primary)] border-b border-[var(--border-default)] px-[var(--content-padding-x)] py-6 flex flex-col gap-4">
           {navLinks.map((link) => (
             <Link
               key={link.href}

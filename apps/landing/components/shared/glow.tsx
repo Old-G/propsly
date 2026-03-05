@@ -20,6 +20,7 @@ export function Glow({ size = "md", className }: GlowProps) {
         position: "absolute",
         width: dimension,
         height: dimension,
+        maxWidth: "100vw",
         borderRadius: "9999px",
         background: "var(--accent-glow)",
         filter: `blur(${blur}px)`,

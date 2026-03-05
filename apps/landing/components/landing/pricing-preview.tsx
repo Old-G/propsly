@@ -72,7 +72,7 @@ export function PricingPreview() {
             key={tier.name}
             variants={staggerItem}
             className={cn(
-              "relative rounded-[var(--card-radius)] p-[var(--card-padding)] border transition-all duration-300",
+              "relative flex flex-col rounded-[var(--card-radius)] p-[var(--card-padding)] border transition-all duration-300",
               tier.popular
                 ? "bg-[var(--bg-elevated)] ring-1 ring-[var(--accent)]/30 border-[var(--accent-border)]"
                 : "bg-[var(--bg-surface)] border-[var(--border-default)] hover:border-[var(--border-hover)]"
@@ -112,7 +112,7 @@ export function PricingPreview() {
               </span>
             </div>
 
-            <ul className="space-y-2 mb-8">
+            <ul className="space-y-2 mb-8 flex-1">
               {tier.features.map((feature) => (
                 <li key={feature} className="flex items-center gap-2 text-sm" style={{ color: "var(--text-secondary)" }}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2">

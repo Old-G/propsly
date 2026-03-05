@@ -44,7 +44,7 @@ export function HowItWorks() {
 
         {steps.map((step) => (
           <motion.div key={step.num} variants={staggerItem} className="relative text-center">
-            <div className="text-5xl font-mono font-bold text-[var(--accent)] mb-4">
+            <div className="text-4xl sm:text-5xl font-mono font-bold text-[var(--accent)] mb-4">
               {step.num}
             </div>
             <h3 className="text-xl font-medium mb-2">{step.title}</h3>

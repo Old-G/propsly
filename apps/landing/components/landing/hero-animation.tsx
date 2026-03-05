@@ -154,7 +154,7 @@ export function HeroAnimation() {
       </div>
 
       {/* Content area — fixed height to prevent layout shift */}
-      <div className="p-6 h-[520px] overflow-hidden">
+      <div className="p-4 sm:p-6 h-[520px] overflow-hidden">
         <AnimatePresence mode="wait">
           {/* Stage 0: Logo + title typewriter */}
           {stage >= 0 && (

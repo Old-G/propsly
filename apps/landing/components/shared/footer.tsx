@@ -19,7 +19,7 @@ export function Footer() {
       style={{ borderTop: "1px solid var(--border-default)" }}
     >
       <div className="mx-auto max-w-[var(--content-max-width)]">
-        <div className="grid gap-12 sm:grid-cols-3 mb-12">
+        <div className="grid gap-8 sm:gap-12 sm:grid-cols-3 mb-12">
           {/* Brand */}
           <div>
             <div className="heading-display text-xl italic mb-3">
@@ -78,9 +78,11 @@ export function Footer() {
           <p className="text-xs" style={{ color: "var(--text-tertiary)" }}>
             &copy; 2026 Propsly. All rights reserved.
           </p>
-          <p className="text-xs" style={{ color: "var(--text-tertiary)" }}>
-            Cooked with ☕ &amp; late nights
-          </p>
+          <div className="flex items-center gap-4 text-xs" style={{ color: "var(--text-tertiary)" }}>
+            <Link href="/terms" className="hover:text-[var(--text-secondary)] transition-colors">Terms</Link>
+            <Link href="/privacy" className="hover:text-[var(--text-secondary)] transition-colors">Privacy</Link>
+            <span>Cooked with ☕ &amp; late nights</span>
+          </div>
         </div>
       </div>
     </footer>

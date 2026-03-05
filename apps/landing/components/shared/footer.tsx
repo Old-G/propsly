@@ -4,7 +4,7 @@ const productLinks = [
   { href: "/blog", label: "Blog" },
   { href: "/pricing", label: "Pricing" },
   { href: "/open-source", label: "Open Source" },
-  { href: "/alternatives", label: "Alternatives" },
+  { href: "/contact", label: "Contact" },
 ];
 
 const communityLinks = [

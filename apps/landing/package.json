@@ -19,7 +19,6 @@
     "clsx": "^2.1.1",
     "framer-motion": "^12",
     "geist": "^1",
-    "gray-matter": "^4.0.3",
     "lucide-react": "^0.488",
     "next": "16.1.6",
     "next-mdx-remote": "^6.0.0",

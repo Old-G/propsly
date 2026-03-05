@@ -10,8 +10,10 @@ export const metadata: Metadata = {
     "Tips, strategies, and insights on proposals, pricing, and growing your freelance or agency business.",
 };
 
-export default function BlogPage() {
-  const posts = getAllPosts();
+export const revalidate = 60;
+
+export default async function BlogPage() {
+  const posts = await getAllPosts();
 
   return (
     <>

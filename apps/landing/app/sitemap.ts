@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next";
+import { getAllPosts } from "@/lib/blog";
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://propsly.org";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: BASE_URL,
@@ -44,26 +45,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  // Blog posts - read from filesystem if available
-  let blogPages: MetadataRoute.Sitemap = [];
-  try {
-    const fs = require("fs");
-    const path = require("path");
-    const blogDir = path.join(process.cwd(), "content/blog");
-    if (fs.existsSync(blogDir)) {
-      const files = fs
-        .readdirSync(blogDir)
-        .filter((f: string) => f.endsWith(".mdx"));
-      blogPages = files.map((f: string) => ({
-        url: `${BASE_URL}/blog/${f.replace(".mdx", "")}`,
-        lastModified: new Date(),
-        changeFrequency: "weekly" as const,
-        priority: 0.6,
-      }));
-    }
-  } catch {
-    // Blog directory may not exist yet
-  }
+  const posts = await getAllPosts();
+  const blogPages: MetadataRoute.Sitemap = posts.map((post) => ({
+    url: `${BASE_URL}/blog/${post.slug}`,
+    lastModified: new Date(post.date),
+    changeFrequency: "weekly",
+    priority: 0.6,
+  }));
 
   return [...staticPages, ...alternativePages, ...blogPages];
 }

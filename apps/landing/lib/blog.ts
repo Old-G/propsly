@@ -1,8 +1,4 @@
-import fs from "fs";
-import path from "path";
-import matter from "gray-matter";
-
-const BLOG_DIR = path.join(process.cwd(), "content/blog");
+import { createClient } from "@/lib/supabase/server";
 
 export interface BlogPost {
   slug: string;
@@ -16,31 +12,54 @@ export interface BlogPost {
   content: string;
 }
 
-export function getAllPosts(): BlogPost[] {
-  if (!fs.existsSync(BLOG_DIR)) return [];
-  const files = fs.readdirSync(BLOG_DIR).filter((f) => f.endsWith(".mdx"));
-  return files
-    .map((file) => {
-      const raw = fs.readFileSync(path.join(BLOG_DIR, file), "utf-8");
-      const { data, content } = matter(raw);
-      const words = content.split(/\s+/).length;
-      const readingTime = `${Math.ceil(words / 200)} min read`;
-      return {
-        slug: file.replace(".mdx", ""),
-        title: data.title,
-        description: data.description,
-        date: data.date,
-        author: data.author ?? "Propsly Team",
-        readingTime,
-        image: data.image,
-        status: data.status ?? "published",
-        content,
-      } as BlogPost;
-    })
-    .filter((p) => p.status === "published")
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+function calcReadingTime(content: string): string {
+  const words = content.split(/\s+/).length;
+  return `${Math.ceil(words / 200)} min read`;
 }
 
-export function getPostBySlug(slug: string): BlogPost | undefined {
-  return getAllPosts().find((p) => p.slug === slug);
+export async function getAllPosts(): Promise<BlogPost[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("blog_posts")
+    .select("*")
+    .eq("status", "published")
+    .order("published_at", { ascending: false });
+
+  if (error || !data) return [];
+
+  return data.map((row) => ({
+    slug: row.slug,
+    title: row.title,
+    description: row.description,
+    date: row.published_at ?? row.created_at,
+    author: row.author ?? "Propsly Team",
+    readingTime: calcReadingTime(row.content),
+    image: row.image,
+    status: row.status as "published" | "draft",
+    content: row.content,
+  }));
+}
+
+export async function getPostBySlug(slug: string): Promise<BlogPost | undefined> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("blog_posts")
+    .select("*")
+    .eq("slug", slug)
+    .eq("status", "published")
+    .single();
+
+  if (error || !data) return undefined;
+
+  return {
+    slug: data.slug,
+    title: data.title,
+    description: data.description,
+    date: data.published_at ?? data.created_at,
+    author: data.author ?? "Propsly Team",
+    readingTime: calcReadingTime(data.content),
+    image: data.image,
+    status: data.status as "published" | "draft",
+    content: data.content,
+  };
 }

@@ -4,12 +4,10 @@ import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { Header } from "@/components/shared/header";
 import { Footer } from "@/components/shared/footer";
-import { getAllPosts, getPostBySlug } from "@/lib/blog";
+import { getPostBySlug } from "@/lib/blog";
 import type { ComponentPropsWithoutRef } from "react";
 
-export function generateStaticParams() {
-  return getAllPosts().map((post) => ({ slug: post.slug }));
-}
+export const revalidate = 60;
 
 export async function generateMetadata({
   params,
@@ -17,7 +15,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
   if (!post) return {};
   return {
     title: `${post.title} — Propsly Blog`,
@@ -85,7 +83,7 @@ export default async function BlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
   if (!post) notFound();
 
   const formattedDate = new Date(post.date).toLocaleDateString("en-US", {

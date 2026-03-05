@@ -1,10 +1,19 @@
 import { Resend } from "resend";
 
-export const resend = new Resend(process.env.RESEND_API_KEY);
-
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://propsly.org";
 
+function getResend() {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) {
+    return null;
+  }
+  return new Resend(key);
+}
+
 export async function sendWelcomeEmail(to: string, name?: string) {
+  const resend = getResend();
+  if (!resend) return;
+
   const firstName = name?.split(" ")[0] ?? "there";
 
   return resend.emails.send({

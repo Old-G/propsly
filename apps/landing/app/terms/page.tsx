@@ -140,9 +140,9 @@ export default function TermsPage() {
               11. Contact
             </h2>
             <p>
-              For questions about these terms, contact us at{" "}
-              <a href="mailto:hello@propsly.org" className="text-[var(--accent)] hover:underline">
-                hello@propsly.org
+              For questions about these terms,{" "}
+              <a href="/contact" className="text-[var(--accent)] hover:underline">
+                contact us here
               </a>
               .
             </p>

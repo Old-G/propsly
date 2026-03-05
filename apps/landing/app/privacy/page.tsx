@@ -172,9 +172,9 @@ export default function PrivacyPage() {
               11. Contact
             </h2>
             <p>
-              For privacy-related inquiries, contact us at{" "}
-              <a href="mailto:hello@propsly.org" className="text-[var(--accent)] hover:underline">
-                hello@propsly.org
+              For privacy-related inquiries,{" "}
+              <a href="/contact" className="text-[var(--accent)] hover:underline">
+                contact us here
               </a>
               .
             </p>

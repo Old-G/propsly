@@ -1,0 +1,22 @@
+{
+  "name": "propsly",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.6.4",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "dev:landing": "pnpm --filter @propsly/landing dev",
+    "build:landing": "pnpm --filter @propsly/landing build",
+    "lint:landing": "pnpm --filter @propsly/landing lint",
+    "dev:web": "pnpm --filter @propsly/web dev",
+    "build:web": "pnpm --filter @propsly/web build"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["sharp", "unrs-resolver"]
+  },
+  "devDependencies": {
+    "turbo": "^2"
+  }
+}

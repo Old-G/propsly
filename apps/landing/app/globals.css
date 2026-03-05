@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+:root {
+  /* Backgrounds */
+  --bg-primary: #0a0a0a;
+  --bg-surface: #111111;
+  --bg-surface-hover: #1a1a1a;
+  --bg-elevated: #161616;
+  --bg-section-alt: #0f0f0f;
+
+  /* Borders */
+  --border-default: #1f1f1f;
+  --border-hover: #2a2a2a;
+  --border-accent: #34d39940;
+
+  /* Text */
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1a1;
+  --text-tertiary: #666666;
+  --text-inverse: #0a0a0a;
+
+  /* Accent — Emerald */
+  --accent: #34d399;
+  --accent-hover: #6ee7b7;
+  --accent-muted: #34d39920;
+  --accent-glow: #34d39915;
+  --accent-border: #34d39940;
+
+  /* Semantic */
+  --success: #34d399;
+  --warning: #fbbf24;
+  --error: #f87171;
+  --info: #60a5fa;
+
+  /* Fonts */
+  --font-display: "Instrument Serif", Georgia, serif;
+  --font-body: var(--font-geist-sans), -apple-system, sans-serif;
+  --font-mono: var(--font-geist-mono), "JetBrains Mono", monospace;
+
+  /* Spacing */
+  --section-padding-y: 160px;
+  --section-padding-y-mobile: 80px;
+  --content-max-width: 1200px;
+  --content-narrow: 800px;
+  --content-padding-x: 24px;
+  --card-padding: 32px;
+  --card-radius: 16px;
+  --card-border: 1px solid var(--border-default);
+  --grid-gap: 24px;
+  --stack-gap: 16px;
+}
+
+@theme inline {
+  --color-background: var(--bg-primary);
+  --color-foreground: var(--text-primary);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-mono);
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+}
+
+/* Button styles */
+.btn-primary {
+  background: var(--accent);
+  color: var(--text-inverse);
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 20px var(--accent-glow);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-primary:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 0 40px var(--accent-glow), 0 0 80px var(--accent-glow);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+  padding: 12px 28px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-secondary:hover {
+  border-color: var(--accent-border);
+  background: var(--accent-muted);
+}
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.heading-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--text-primary);
+}

@@ -1,0 +1,89 @@
+import Link from "next/link";
+
+const productLinks = [
+  { href: "/blog", label: "Blog" },
+  { href: "/pricing", label: "Pricing" },
+  { href: "/open-source", label: "Open Source" },
+  { href: "/alternatives", label: "Alternatives" },
+];
+
+const communityLinks = [
+  { href: "https://github.com/propsly/propsly", label: "GitHub", external: true },
+  { href: "https://discord.gg/propsly", label: "Discord", external: true },
+  { href: "https://x.com/propsly", label: "Twitter/X", external: true },
+];
+
+export function Footer() {
+  return (
+    <footer
+      className="px-[var(--content-padding-x)] py-16"
+      style={{ borderTop: "1px solid var(--border-default)" }}
+    >
+      <div className="mx-auto max-w-[var(--content-max-width)]">
+        <div className="grid gap-12 sm:grid-cols-3 mb-12">
+          {/* Brand */}
+          <div>
+            <div className="heading-display text-xl italic mb-3">
+              Propsly<span style={{ color: "var(--accent)" }}>.</span>
+            </div>
+            <p className="text-sm leading-relaxed" style={{ color: "var(--text-tertiary)" }}>
+              Open-source proposal platform. Create beautiful interactive
+              proposals as web pages.
+            </p>
+          </div>
+
+          {/* Product */}
+          <div>
+            <h4 className="text-sm font-medium mb-4">Product</h4>
+            <ul className="space-y-2">
+              {productLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm transition-colors"
+                    style={{ color: "var(--text-tertiary)" }}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Community */}
+          <div>
+            <h4 className="text-sm font-medium mb-4">Community</h4>
+            <ul className="space-y-2">
+              {communityLinks.map((link) => (
+                <li key={link.href}>
+                  <a
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm transition-colors"
+                    style={{ color: "var(--text-tertiary)" }}
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Divider + copyright */}
+        <div
+          className="pt-8 flex flex-wrap items-center justify-between gap-4"
+          style={{ borderTop: "1px solid var(--border-default)" }}
+        >
+          <p className="text-xs" style={{ color: "var(--text-tertiary)" }}>
+            &copy; 2026 Propsly. All rights reserved.
+          </p>
+          <p className="text-xs" style={{ color: "var(--text-tertiary)" }}>
+            Cooked with ☕ &amp; late nights
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}

@@ -1,0 +1,11 @@
+{
+  "name": "@propsly/ui",
+  "version": "0.1.0",
+  "private": true,
+  "exports": {
+    "./*": "./src/*.tsx"
+  },
+  "devDependencies": {
+    "typescript": "^5"
+  }
+}

@@ -4,6 +4,7 @@ import { OAuthButtons } from "@/components/auth/oauth-buttons";
 export const metadata = {
   title: "Log In — Propsly",
   description: "Log in to your Propsly account.",
+  robots: { index: false, follow: false },
 };
 
 function ErrorBanner({ error }: { error: string | null }) {

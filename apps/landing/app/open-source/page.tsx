@@ -2,16 +2,39 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Header } from "@/components/shared/header";
 import { Footer } from "@/components/shared/footer";
+import { softwareApplicationSchema } from "@/lib/structured-data";
 
 export const metadata: Metadata = {
-  title: "Open Source — Propsly",
+  title: "Open Source",
   description:
     "Propsly is open-source under AGPL-3.0. View the source, self-host, or contribute to the project.",
+  alternates: {
+    canonical: "/open-source",
+  },
+  openGraph: {
+    title: "Open Source — Propsly",
+    description:
+      "Propsly is open-source under AGPL-3.0. View the source, self-host, or contribute.",
+    images: [
+      {
+        url: "/og?title=Open+Source&description=Built+in+the+open.+AGPL-3.0+licensed.",
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+  twitter: {
+    images: ["/og?title=Open+Source&description=Built+in+the+open.+AGPL-3.0+licensed."],
+  },
 };
 
 export default function OpenSourcePage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareApplicationSchema()) }}
+      />
       <Header />
       <main className="max-w-[800px] mx-auto pt-32 pb-20 px-6">
         <span className="section-label">OPEN SOURCE</span>

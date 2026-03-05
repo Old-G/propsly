@@ -5,6 +5,9 @@ import { Header } from "@/components/shared/header";
 import { Footer } from "@/components/shared/footer";
 import { ComparisonTable } from "@/components/alternatives/comparison-table";
 import { getCompetitor, getAllCompetitorSlugs } from "@/lib/competitors";
+import { breadcrumbSchema } from "@/lib/structured-data";
+
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://propsly.org";
 
 interface PageProps {
   params: Promise<{ competitor: string }>;
@@ -22,12 +25,21 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return { title: "Not Found" };
   }
 
+  const ogImage = `/og?title=${encodeURIComponent(`Propsly vs ${competitor.name}`)}&description=${encodeURIComponent(`Open-source alternative to ${competitor.name}`)}`;
+
   return {
-    title: `Propsly vs ${competitor.name} \u2014 Open-Source Alternative`,
-    description: `Switch from ${competitor.name} (${competitor.price}) to Propsly \u2014 a free, open-source, and self-hostable proposal platform with interactive pricing, e-signatures, and tracking.`,
+    title: `Propsly vs ${competitor.name} — Open-Source Alternative`,
+    description: `Switch from ${competitor.name} (${competitor.price}) to Propsly — a free, open-source, and self-hostable proposal platform with interactive pricing, e-signatures, and tracking.`,
+    alternates: {
+      canonical: `/alternatives/${slug}`,
+    },
     openGraph: {
-      title: `Propsly vs ${competitor.name} \u2014 Open-Source Alternative`,
+      title: `Propsly vs ${competitor.name} — Open-Source Alternative`,
       description: `Switch from ${competitor.name} to Propsly. Free, open-source, self-hostable.`,
+      images: [{ url: ogImage, width: 1200, height: 630 }],
+    },
+    twitter: {
+      images: [ogImage],
     },
   };
 }
@@ -40,8 +52,18 @@ export default async function CompetitorPage({ params }: PageProps) {
     notFound();
   }
 
+  const breadcrumbs = breadcrumbSchema([
+    { name: "Home", url: BASE_URL },
+    { name: "Alternatives", url: `${BASE_URL}/alternatives` },
+    { name: `vs ${competitor.name}`, url: `${BASE_URL}/alternatives/${slug}` },
+  ]);
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }}
+      />
       <Header />
       <main className="mx-auto pt-32 pb-20 px-6" style={{ maxWidth: "var(--content-max-width)" }}>
         {/* Section 1: Hero */}

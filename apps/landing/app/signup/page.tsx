@@ -4,6 +4,7 @@ import { OAuthButtons } from "@/components/auth/oauth-buttons";
 export const metadata = {
   title: "Sign Up — Propsly",
   description: "Create your Propsly account to start building beautiful proposals.",
+  robots: { index: false, follow: false },
 };
 
 export default function SignupPage() {

@@ -2,11 +2,30 @@ import type { Metadata } from "next";
 import { Header } from "@/components/shared/header";
 import { Footer } from "@/components/shared/footer";
 import { PricingPreview } from "@/components/landing/pricing-preview";
+import { productSchema } from "@/lib/structured-data";
 
 export const metadata: Metadata = {
-  title: "Pricing — Propsly",
+  title: "Pricing",
   description:
     "Transparent pricing for every team size. Free to self-host, affordable in the cloud. No hidden fees.",
+  alternates: {
+    canonical: "/pricing",
+  },
+  openGraph: {
+    title: "Pricing — Propsly",
+    description:
+      "Transparent pricing for every team size. Free to self-host, affordable in the cloud.",
+    images: [
+      {
+        url: "/og?title=Pricing&description=Transparent+pricing+for+every+team+size",
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+  twitter: {
+    images: ["/og?title=Pricing&description=Transparent+pricing+for+every+team+size"],
+  },
 };
 
 const faqs = [
@@ -40,6 +59,10 @@ const faqs = [
 export default function PricingPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema()) }}
+      />
       <Header />
       <main className="max-w-[var(--content-max-width)] mx-auto pt-32 pb-20 px-6">
         <div className="text-center mb-16">

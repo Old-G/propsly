@@ -5,6 +5,7 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import { Header } from "@/components/shared/header";
 import { Footer } from "@/components/shared/footer";
 import { getPostBySlug } from "@/lib/blog";
+import { blogPostSchema } from "@/lib/structured-data";
 import type { ComponentPropsWithoutRef } from "react";
 
 export const revalidate = 60;
@@ -17,9 +18,26 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post) return {};
+
+  const ogImage = `/og?title=${encodeURIComponent(post.title)}&description=${encodeURIComponent(post.description)}`;
+
   return {
     title: `${post.title} — Propsly Blog`,
     description: post.description,
+    alternates: {
+      canonical: `/blog/${slug}`,
+    },
+    openGraph: {
+      title: `${post.title} — Propsly Blog`,
+      description: post.description,
+      type: "article",
+      publishedTime: post.date,
+      authors: [post.author],
+      images: [{ url: ogImage, width: 1200, height: 630 }],
+    },
+    twitter: {
+      images: [ogImage],
+    },
   };
 }
 
@@ -94,6 +112,10 @@ export default async function BlogPostPage({
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostSchema(post)) }}
+      />
       <Header />
       <main className="max-w-[800px] mx-auto pt-32 pb-20 px-6">
         <Link

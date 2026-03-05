@@ -3,6 +3,11 @@ import { createClient } from "@/lib/supabase/server";
 import { WelcomeHero } from "@/components/welcome/welcome-hero";
 import { FeedbackForm } from "@/components/welcome/feedback-form";
 
+export const metadata = {
+  title: "Welcome — Propsly",
+  robots: { index: false, follow: false },
+};
+
 export default async function WelcomePage() {
   const supabase = await createClient();
   const {

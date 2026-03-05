@@ -64,7 +64,7 @@ export default function PricingPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema()) }}
       />
       <Header />
-      <main className="max-w-[var(--content-max-width)] mx-auto pt-32 pb-20 px-6">
+      <main className="relative z-10 max-w-[var(--content-max-width)] mx-auto pt-32 pb-20 px-6">
         <div className="text-center mb-16">
           <h1 className="heading-display text-4xl sm:text-5xl">
             Simple, transparent pricing

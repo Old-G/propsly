@@ -19,7 +19,7 @@ export default async function WelcomePage() {
   }
 
   return (
-    <main className="mx-auto max-w-[600px] px-6 py-20">
+    <main className="relative z-10 mx-auto max-w-[600px] px-6 py-20">
       <WelcomeHero
         user={{
           email: user.email!,

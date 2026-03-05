@@ -65,7 +65,7 @@ export default async function CompetitorPage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }}
       />
       <Header />
-      <main className="mx-auto pt-32 pb-20 px-6" style={{ maxWidth: "var(--content-max-width)" }}>
+      <main className="relative z-10 mx-auto pt-32 pb-20 px-6" style={{ maxWidth: "var(--content-max-width)" }}>
         {/* Section 1: Hero */}
         <section className="mb-20">
           <p className="section-label">Alternative</p>

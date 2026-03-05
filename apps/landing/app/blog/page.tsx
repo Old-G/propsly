@@ -35,13 +35,13 @@ export default async function BlogPage() {
   const { posts, hasMore } = await getPaginatedPosts(0, POSTS_PER_PAGE);
 
   return (
-    <>
+    <div className="relative z-10 flex flex-col min-h-screen">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(blogSchema()) }}
       />
       <Header />
-      <main className="mx-auto max-w-[var(--content-max-width)] pt-32 pb-20 px-6">
+      <main className="flex-1 mx-auto max-w-[var(--content-max-width)] w-full pt-32 pb-20 px-6">
         <h1 className="heading-display text-4xl sm:text-5xl mb-4">Blog</h1>
         <p className="text-[var(--text-secondary)] text-lg mb-12">
           Insights on proposals, pricing, and winning more clients.
@@ -50,6 +50,6 @@ export default async function BlogPage() {
         <BlogList initialPosts={posts} initialHasMore={hasMore} />
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

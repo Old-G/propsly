@@ -25,7 +25,7 @@ export default async function LoginPage({
   const errorParam = params.error ?? null;
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center px-6">
+    <div className="relative z-10 min-h-screen flex items-center justify-center px-6">
       {/* Radial glow behind card */}
       <div
         className="pointer-events-none absolute inset-0"

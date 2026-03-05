@@ -36,7 +36,7 @@ export default function OpenSourcePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareApplicationSchema()) }}
       />
       <Header />
-      <main className="max-w-[800px] mx-auto pt-32 pb-20 px-6">
+      <main className="relative z-10 max-w-[800px] mx-auto pt-32 pb-20 px-6">
         <span className="section-label">OPEN SOURCE</span>
         <h1 className="heading-display text-4xl sm:text-5xl mt-4">
           Built in the open

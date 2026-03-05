@@ -111,13 +111,13 @@ export default async function BlogPostPage({
   });
 
   return (
-    <>
+    <div className="relative z-10 flex flex-col min-h-screen">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostSchema(post)) }}
       />
       <Header />
-      <main className="max-w-[800px] mx-auto pt-32 pb-20 px-6">
+      <main className="flex-1 max-w-[800px] mx-auto w-full pt-32 pb-20 px-6">
         <Link
           href="/blog"
           className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
@@ -134,6 +134,6 @@ export default async function BlogPostPage({
         <MDXRemote source={post.content} components={mdxComponents} />
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

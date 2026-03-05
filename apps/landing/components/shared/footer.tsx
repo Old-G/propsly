@@ -8,9 +8,8 @@ const productLinks = [
 ];
 
 const communityLinks = [
-  { href: "https://github.com/propsly/propsly", label: "GitHub", external: true },
-  { href: "https://discord.gg/propsly", label: "Discord", external: true },
-  { href: "https://x.com/propsly", label: "Twitter/X", external: true },
+  { href: "https://github.com/Old-G/propsly", label: "GitHub", external: true },
+  { href: "https://x.com/oldg9516", label: "Twitter/X", external: true },
 ];
 
 export function Footer() {

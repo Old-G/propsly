@@ -42,7 +42,7 @@ export function Hero() {
             Get Started Free &rarr;
           </Link>
           <a
-            href="https://github.com/propsly/propsly"
+            href="https://github.com/Old-G/propsly"
             target="_blank"
             rel="noopener noreferrer"
             className="btn-secondary"

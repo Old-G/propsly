@@ -27,7 +27,7 @@ export function OpenSourceSection() {
 
       <div className="mt-8 flex justify-center gap-4">
         <a
-          href="https://github.com/propsly/propsly"
+          href="https://github.com/Old-G/propsly"
           target="_blank"
           rel="noopener noreferrer"
           className="btn-secondary"
@@ -35,7 +35,7 @@ export function OpenSourceSection() {
           View on GitHub &rarr;
         </a>
         <a
-          href="https://github.com/propsly/propsly"
+          href="https://github.com/Old-G/propsly"
           target="_blank"
           rel="noopener noreferrer"
           className="btn-secondary"

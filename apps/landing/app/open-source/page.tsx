@@ -72,7 +72,7 @@ export default function OpenSourcePage() {
           >
             <pre className="font-mono text-sm" style={{ color: "var(--text-primary)" }}>
               <code>{`# Clone the repository
-git clone https://github.com/propsly/propsly.git
+git clone https://github.com/Old-G/propsly.git
 cd propsly
 
 # Start with Docker Compose
@@ -107,7 +107,7 @@ docker compose up -d
               </li>
               <li>
                 <strong style={{ color: "var(--text-primary)" }}>Discussions:</strong>{" "}
-                Join our GitHub Discussions or Discord to chat with the team and
+                Join our GitHub Discussions to chat with the team and
                 community.
               </li>
             </ul>
@@ -135,7 +135,7 @@ docker compose up -d
         {/* CTA */}
         <div className="mt-20 text-center">
           <Link
-            href="https://github.com/propsly/propsly"
+            href="https://github.com/Old-G/propsly"
             className="btn-secondary inline-flex"
             target="_blank"
             rel="noopener noreferrer"

@@ -14,17 +14,12 @@ interface WelcomeHeroProps {
 const links = [
   {
     label: "Star us on GitHub",
-    href: "https://github.com/propsly/propsly",
-    external: true,
-  },
-  {
-    label: "Join our Discord",
-    href: "https://discord.gg/propsly",
+    href: "https://github.com/Old-G/propsly",
     external: true,
   },
   {
     label: "Follow us on X",
-    href: "https://x.com/propsly",
+    href: "https://x.com/oldg9516",
     external: true,
   },
   {

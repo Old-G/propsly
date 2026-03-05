@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Instrument_Serif } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
+import { Toaster } from "sonner";
 import { GrainOverlay } from "@/components/shared/grain-overlay";
 import "./globals.css";
 
@@ -45,6 +46,7 @@ export default function RootLayout({
         className={`${GeistSans.variable} ${GeistMono.variable} ${instrumentSerif.variable} antialiased`}
       >
         {children}
+        <Toaster theme="dark" />
         <GrainOverlay />
       </body>
     </html>

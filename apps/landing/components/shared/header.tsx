@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
 
 const navLinks = [
   { href: "/blog", label: "Blog" },

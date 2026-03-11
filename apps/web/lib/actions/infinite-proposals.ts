@@ -1,6 +1,7 @@
 "use server"
 
 import { createClient } from "@/lib/supabase/server"
+import { sanitizePostgrestQuery } from "@/lib/utils"
 
 export async function fetchProposalsPage(input: {
   workspaceId: string
@@ -25,8 +26,9 @@ export async function fetchProposalsPage(input: {
   }
 
   if (input.search) {
+    const s = sanitizePostgrestQuery(input.search)
     query = query.or(
-      `title.ilike.%${input.search}%,client_name.ilike.%${input.search}%,client_company.ilike.%${input.search}%`
+      `title.ilike.%${s}%,client_name.ilike.%${s}%,client_company.ilike.%${s}%`
     )
   }
 

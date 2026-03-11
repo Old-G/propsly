@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { getUserProfile } from "@/lib/queries"
 import { ContactsList } from "@/components/contacts/contacts-list"
 
 export const metadata = {
@@ -6,18 +7,9 @@ export const metadata = {
 }
 
 export default async function ContactsPage() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("default_workspace_id")
-    .eq("id", user!.id)
-    .single()
-
+  const profile = await getUserProfile()
   const workspaceId = profile!.default_workspace_id!
+  const supabase = await createClient()
   const perPage = 20
 
   const { data: contacts, count } = await supabase

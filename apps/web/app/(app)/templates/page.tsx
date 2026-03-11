@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { getCurrentUser, getUserProfile } from "@/lib/queries"
 import { TemplatesGallery } from "@/components/templates/templates-gallery"
 import { seedSystemTemplates } from "@/lib/actions/templates"
 
@@ -7,18 +8,10 @@ export const metadata = {
 }
 
 export default async function TemplatesPage() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("default_workspace_id")
-    .eq("id", user!.id)
-    .single()
-
+  const user = await getCurrentUser()
+  const profile = await getUserProfile()
   const workspaceId = profile!.default_workspace_id!
+  const supabase = await createClient()
 
   // Auto-seed system templates if none exist
   const { count: systemCount } = await supabase

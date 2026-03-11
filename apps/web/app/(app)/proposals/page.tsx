@@ -1,4 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
+import { getUserProfile } from "@/lib/queries"
+import { sanitizePostgrestQuery } from "@/lib/utils"
 import { ProposalsList } from "@/components/proposals/proposals-list"
 
 export const metadata = {
@@ -17,19 +19,9 @@ interface ProposalsPageProps {
 
 export default async function ProposalsPage({ searchParams }: ProposalsPageProps) {
   const params = await searchParams
-  const supabase = await createClient()
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("default_workspace_id")
-    .eq("id", user!.id)
-    .single()
-
+  const profile = await getUserProfile()
   const workspaceId = profile!.default_workspace_id!
+  const supabase = await createClient()
 
   const page = parseInt(params.page ?? "1")
   const perPage = 20
@@ -49,8 +41,9 @@ export default async function ProposalsPage({ searchParams }: ProposalsPageProps
   }
 
   if (params.search) {
+    const s = sanitizePostgrestQuery(params.search)
     query = query.or(
-      `title.ilike.%${params.search}%,client_name.ilike.%${params.search}%,client_company.ilike.%${params.search}%`
+      `title.ilike.%${s}%,client_name.ilike.%${s}%,client_company.ilike.%${s}%`
     )
   }
 

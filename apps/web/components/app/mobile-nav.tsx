@@ -3,16 +3,11 @@
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, X, LayoutDashboard, FileText, LayoutTemplate, Users, Settings } from "lucide-react"
+import { Menu, X } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { navItems, settingsNavItem } from "@/lib/navigation"
 
-const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/proposals", label: "Proposals", icon: FileText },
-  { href: "/templates", label: "Templates", icon: LayoutTemplate },
-  { href: "/contacts", label: "Contacts", icon: Users },
-  { href: "/settings/workspace", label: "Settings", icon: Settings },
-]
+const allNavItems = [...navItems, settingsNavItem]
 
 interface MobileNavProps {
   workspaceName: string
@@ -43,7 +38,7 @@ export function MobileNav({ workspaceName }: MobileNavProps) {
           {/* Drawer */}
           <nav className="fixed left-0 top-14 z-50 w-64 border-r border-[var(--border-default)] bg-[var(--bg-surface)] h-[calc(100vh-3.5rem)] shadow-xl">
             <div className="space-y-1 p-3">
-              {navItems.map((item) => {
+              {allNavItems.map((item) => {
                 const isActive =
                   pathname === item.href || pathname.startsWith(item.href + "/")
                 return (

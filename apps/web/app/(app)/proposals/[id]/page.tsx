@@ -62,16 +62,17 @@ export default async function ProposalDetailPage({
   const { id } = await params
   const supabase = await createClient()
 
-  const { data: proposal } = await supabase
-    .from("proposals")
-    .select("*")
-    .eq("id", id)
-    .single()
+  // Fetch proposal and engagement data in parallel (both only need id)
+  const [{ data: proposal }, engagement] = await Promise.all([
+    supabase
+      .from("proposals")
+      .select("*")
+      .eq("id", id)
+      .single(),
+    calculateEngagementScore(id),
+  ])
 
   if (!proposal) notFound()
-
-  // Get engagement data
-  const engagement = await calculateEngagementScore(id)
 
   const avgTimeSeconds = engagement.views > 0
     ? Math.round(engagement.totalTimeMs / 1000 / engagement.views)

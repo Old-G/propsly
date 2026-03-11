@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation"
-import { createClient } from "@/lib/supabase/server"
+import { getCurrentUser, getUserProfile } from "@/lib/queries"
 import { ProfileForm } from "@/components/settings/profile-form"
 
 export const metadata = {
@@ -7,18 +7,10 @@ export const metadata = {
 }
 
 export default async function ProfileSettingsPage() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
+  const user = await getCurrentUser()
   if (!user) redirect("/login")
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single()
+  const profile = await getUserProfile()
 
   return (
     <div className="mx-auto max-w-2xl p-8">

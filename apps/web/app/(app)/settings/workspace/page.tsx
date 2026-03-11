@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import { getCurrentUser, getUserProfile } from "@/lib/queries"
 import { WorkspaceForm } from "@/components/settings/workspace-form"
 
 export const metadata = {
@@ -7,25 +8,16 @@ export const metadata = {
 }
 
 export default async function WorkspaceSettingsPage() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
+  const user = await getCurrentUser()
   if (!user) redirect("/login")
 
-  // Get user's profile to find default workspace
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("default_workspace_id")
-    .eq("id", user.id)
-    .single()
-
+  const profile = await getUserProfile()
   if (!profile?.default_workspace_id) {
     redirect("/onboarding")
   }
 
-  // Get workspace details
+  // Get workspace details (full select, not just id/name/logo_url from cache)
+  const supabase = await createClient()
   const { data: workspace } = await supabase
     .from("workspaces")
     .select("*")

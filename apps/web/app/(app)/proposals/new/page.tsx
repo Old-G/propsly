@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import { getCurrentUser, getUserProfile } from "@/lib/queries"
 import { NewProposalContent } from "@/components/proposals/new-proposal-content"
 
 export const metadata = {
@@ -7,20 +8,13 @@ export const metadata = {
 }
 
 export default async function NewProposalPage() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
+  const user = await getCurrentUser()
   if (!user) redirect("/login")
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("default_workspace_id")
-    .eq("id", user.id)
-    .single()
-
+  const profile = await getUserProfile()
   if (!profile?.default_workspace_id) redirect("/onboarding")
+
+  const supabase = await createClient()
 
   // Get templates
   const { data: templates } = await supabase

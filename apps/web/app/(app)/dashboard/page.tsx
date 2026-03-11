@@ -1,4 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
+import { getUserProfile } from "@/lib/queries"
+import { sanitizePostgrestQuery } from "@/lib/utils"
 import { DashboardContent } from "@/components/dashboard/dashboard-content"
 
 export const metadata = {
@@ -18,20 +20,9 @@ interface DashboardPageProps {
 
 export default async function DashboardPage({ searchParams }: DashboardPageProps) {
   const params = await searchParams
-  const supabase = await createClient()
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  // Get user's workspace
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("default_workspace_id")
-    .eq("id", user!.id)
-    .single()
-
+  const profile = await getUserProfile()
   const workspaceId = profile!.default_workspace_id!
+  const supabase = await createClient()
 
   // Build query
   const page = parseInt(params.page ?? "1")
@@ -52,18 +43,20 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   }
 
   if (params.search) {
+    const s = sanitizePostgrestQuery(params.search)
     query = query.or(
-      `title.ilike.%${params.search}%,client_name.ilike.%${params.search}%,client_company.ilike.%${params.search}%`
+      `title.ilike.%${s}%,client_name.ilike.%${s}%,client_company.ilike.%${s}%`
     )
   }
 
-  const { data: proposals, count } = await query
-
-  // Stats - get counts by status for the workspace
-  const { data: allProposals } = await supabase
-    .from("proposals")
-    .select("status, total_amount")
-    .eq("workspace_id", workspaceId)
+  // Fetch paginated proposals and stats in parallel (both only need workspaceId)
+  const [{ data: proposals, count }, { data: allProposals }] = await Promise.all([
+    query,
+    supabase
+      .from("proposals")
+      .select("status, total_amount")
+      .eq("workspace_id", workspaceId),
+  ])
 
   const stats = {
     total: allProposals?.length ?? 0,

@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
+import { sanitizePostgrestQuery } from "@/lib/utils"
 
 export async function getContactWithProposals(contactId: string) {
   const supabase = await createClient()
@@ -57,15 +58,7 @@ export async function searchContacts(workspaceId: string, query: string) {
 
   if (!user) return { contacts: [] }
 
-  // Sanitize query: escape PostgREST special characters to prevent filter injection
-  const sanitized = query
-    .replace(/\\/g, "\\\\")
-    .replace(/%/g, "\\%")
-    .replace(/_/g, "\\_")
-    .replace(/\(/g, "\\(")
-    .replace(/\)/g, "\\)")
-    .replace(/,/g, "\\,")
-    .replace(/\./g, "\\.")
+  const sanitized = sanitizePostgrestQuery(query)
 
   const { data } = await supabase
     .from("contacts")

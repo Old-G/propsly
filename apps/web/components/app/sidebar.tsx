@@ -2,21 +2,8 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import {
-  LayoutDashboard,
-  FileText,
-  LayoutTemplate,
-  Users,
-  Settings,
-} from "lucide-react"
 import { cn } from "@/lib/utils"
-
-const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/proposals", label: "Proposals", icon: FileText },
-  { href: "/templates", label: "Templates", icon: LayoutTemplate },
-  { href: "/contacts", label: "Contacts", icon: Users },
-]
+import { navItems, settingsNavItem } from "@/lib/navigation"
 
 interface SidebarProps {
   workspace: {
@@ -73,7 +60,7 @@ export function AppSidebar({ workspace }: SidebarProps) {
       {/* Settings at bottom */}
       <div className="border-t border-[var(--border-default)] p-3">
         <Link
-          href="/settings/workspace"
+          href={settingsNavItem.href}
           className={cn(
             "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
             pathname.startsWith("/settings")
@@ -81,8 +68,8 @@ export function AppSidebar({ workspace }: SidebarProps) {
               : "text-[var(--text-secondary)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-primary)]"
           )}
         >
-          <Settings className="h-4 w-4" />
-          Settings
+          <settingsNavItem.icon className="h-4 w-4" />
+          {settingsNavItem.label}
         </Link>
       </div>
     </aside>

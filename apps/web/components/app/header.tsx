@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { signOut } from "@/lib/actions/settings"
 import { NotificationDropdown } from "@/components/app/notification-dropdown"
+import { MobileNav } from "@/components/app/mobile-nav"
 import type { NotificationItem } from "@/lib/actions/notifications"
 
 interface HeaderProps {
@@ -30,7 +31,7 @@ interface HeaderProps {
   notifications: NotificationItem[]
 }
 
-export function AppHeader({ user, unreadCount, notifications }: HeaderProps) {
+export function AppHeader({ user, workspace, unreadCount, notifications }: HeaderProps) {
   const router = useRouter()
 
   async function handleSignOut() {
@@ -48,19 +49,15 @@ export function AppHeader({ user, unreadCount, notifications }: HeaderProps) {
     : user.email[0].toUpperCase()
 
   return (
-    <header className="flex h-14 items-center justify-between border-b border-[var(--border-default)] px-6">
-      {/* Mobile menu placeholder */}
-      <div className="lg:hidden">
-        <span className="text-sm font-medium">Propsly</span>
-      </div>
+    <header className="flex h-14 items-center justify-between border-b border-[var(--border-default)] px-4 sm:px-6">
+      {/* Mobile nav */}
+      <MobileNav workspaceName={workspace.name} />
       <div className="hidden lg:block" />
 
       {/* Right side */}
       <div className="flex items-center gap-2">
-        {/* Notifications */}
         <NotificationDropdown notifications={notifications} unreadCount={unreadCount} />
 
-        {/* User menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">

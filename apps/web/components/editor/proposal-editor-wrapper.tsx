@@ -4,7 +4,7 @@ import { useState, useCallback, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { type JSONContent } from "@tiptap/core"
 import { ProposalEditor } from "@propsly/editor"
-import { ArrowLeft, Check, Loader2, AlertCircle, Download } from "lucide-react"
+import { ArrowLeft, Check, Loader2, AlertCircle, Download, Settings, Eye } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { EditorSidebar } from "./editor-sidebar"
 import { SaveAsTemplateModal } from "./save-as-template-modal"
@@ -114,48 +114,44 @@ export function ProposalEditorWrapper({ proposal }: ProposalEditorWrapperProps) 
   return (
     <div className="flex flex-col h-[calc(100vh-3.5rem)]">
       {/* Editor header */}
-      <div className="flex items-center justify-between border-b border-[var(--border-default)] px-4 py-2">
-        <div className="flex items-center gap-4">
+      <div className="flex items-center justify-between border-b border-[var(--border-default)] px-2 sm:px-4 py-2 gap-2">
+        <div className="flex items-center gap-2 sm:gap-4 min-w-0">
           <Link
             href={`/proposals/${proposal.id}`}
-            className="flex items-center gap-1 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+            className="flex items-center gap-1 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors flex-shrink-0"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back
+            <span className="hidden sm:inline">Back</span>
           </Link>
-          <span className="text-sm font-medium truncate max-w-64">{proposal.title}</span>
+          <span className="text-sm font-medium truncate max-w-32 sm:max-w-64">{proposal.title}</span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
           {/* Save status */}
-          <div className="flex items-center gap-1.5 text-xs">
+          <div className="flex items-center gap-1 text-xs">
             {saveStatus === "saved" && (
-              <>
-                <Check className="h-3.5 w-3.5 text-[var(--success)]" />
-                <span className="text-[var(--text-tertiary)]">Saved</span>
-              </>
+              <Check className="h-3.5 w-3.5 text-[var(--success)]" />
             )}
             {saveStatus === "saving" && (
-              <>
-                <Loader2 className="h-3.5 w-3.5 animate-spin text-[var(--text-tertiary)]" />
-                <span className="text-[var(--text-tertiary)]">Saving...</span>
-              </>
+              <Loader2 className="h-3.5 w-3.5 animate-spin text-[var(--text-tertiary)]" />
             )}
             {saveStatus === "unsaved" && (
-              <>
-                <AlertCircle className="h-3.5 w-3.5 text-[var(--warning)]" />
-                <span className="text-[var(--warning)]">Unsaved</span>
-              </>
+              <AlertCircle className="h-3.5 w-3.5 text-[var(--warning)]" />
             )}
             {saveStatus === "error" && (
-              <>
-                <AlertCircle className="h-3.5 w-3.5 text-[var(--error)]" />
-                <span className="text-[var(--error)]">Error saving</span>
-              </>
+              <AlertCircle className="h-3.5 w-3.5 text-[var(--error)]" />
             )}
+            <span className="hidden sm:inline text-[var(--text-tertiary)]">
+              {saveStatus === "saved" && "Saved"}
+              {saveStatus === "saving" && "Saving..."}
+              {saveStatus === "unsaved" && "Unsaved"}
+              {saveStatus === "error" && "Error"}
+            </span>
           </div>
 
-          <SaveAsTemplateModal proposalId={proposal.id} />
+          <div className="hidden sm:block">
+            <SaveAsTemplateModal proposalId={proposal.id} />
+          </div>
 
           <Button
             variant="outline"
@@ -164,7 +160,7 @@ export function ProposalEditorWrapper({ proposal }: ProposalEditorWrapperProps) 
           >
             <a href={`/p/${proposal.slug}?pdf=true`} target="_blank" rel="noopener">
               <Download className="h-4 w-4" />
-              PDF
+              <span className="hidden sm:inline">PDF</span>
             </a>
           </Button>
 
@@ -173,7 +169,8 @@ export function ProposalEditorWrapper({ proposal }: ProposalEditorWrapperProps) 
             size="sm"
             onClick={() => setSidebarOpen(!sidebarOpen)}
           >
-            Settings
+            <span className="hidden sm:inline">Settings</span>
+            <Settings className="h-4 w-4 sm:hidden" />
           </Button>
 
           <Button
@@ -182,7 +179,8 @@ export function ProposalEditorWrapper({ proposal }: ProposalEditorWrapperProps) 
             asChild
           >
             <Link href={`/p/${proposal.slug}`} target="_blank" rel="noopener">
-              Preview
+              <span className="hidden sm:inline">Preview</span>
+              <Eye className="h-4 w-4 sm:hidden" />
             </Link>
           </Button>
         </div>

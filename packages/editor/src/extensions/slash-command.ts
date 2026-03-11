@@ -67,11 +67,19 @@ export const slashCommandItems: SlashCommandItem[] = [
     },
   },
   {
+    title: "Video",
+    description: "Embed YouTube, Vimeo, or Loom",
+    icon: "\u25B6",
+    command: ({ editor, range }) => {
+      editor.chain().focus().deleteRange(range).setVideoBlock().run()
+    },
+  },
+  {
     title: "Divider",
-    description: "Horizontal rule",
+    description: "Visual separator with styles",
     icon: "\u2014",
     command: ({ editor, range }) => {
-      editor.chain().focus().deleteRange(range).setHorizontalRule().run()
+      editor.chain().focus().deleteRange(range).setDividerBlock().run()
     },
   },
   {
@@ -80,6 +88,30 @@ export const slashCommandItems: SlashCommandItem[] = [
     icon: "<>",
     command: ({ editor, range }) => {
       editor.chain().focus().deleteRange(range).setCodeBlock().run()
+    },
+  },
+  {
+    title: "Image",
+    description: "Upload or embed an image",
+    icon: "\u{25A3}",
+    command: ({ editor, range }) => {
+      editor.chain().focus().deleteRange(range).setImageBlock().run()
+    },
+  },
+  {
+    title: "Testimonial",
+    description: "Quote with author attribution",
+    icon: "\u2606",
+    command: ({ editor, range }) => {
+      editor.chain().focus().deleteRange(range).insertTestimonialBlock().run()
+    },
+  },
+  {
+    title: "Table of Contents",
+    description: "Auto-generated from headings",
+    icon: "\u2261",
+    command: ({ editor, range }) => {
+      editor.chain().focus().deleteRange(range).insertTableOfContents().run()
     },
   },
 ]

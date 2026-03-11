@@ -10,6 +10,12 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { EditorToolbar } from "./editor-toolbar"
 import { SlashCommand, slashCommandSuggestion } from "../extensions/slash-command"
 import { SlashCommandMenu } from "./slash-command-menu"
+import { VideoBlockWithView } from "../extensions/video-block-with-view"
+import { DividerBlockWithView } from "../extensions/divider-block-with-view"
+import { TestimonialBlock } from "../extensions/testimonial-block"
+import { TableOfContents } from "../extensions/toc-block"
+import { ImageBlockWithView } from "../extensions/image-block"
+import { ImageBlockView } from "./image-block-view"
 
 export interface ProposalEditorProps {
   content?: JSONContent
@@ -32,7 +38,13 @@ export function ProposalEditor({
     extensions: [
       StarterKit.configure({
         heading: { levels: [1, 2, 3] },
+        horizontalRule: false,
       }),
+      VideoBlockWithView,
+      DividerBlockWithView,
+      TestimonialBlock,
+      TableOfContents,
+      ImageBlockWithView(ImageBlockView),
       Underline,
       Link.configure({
         openOnClick: false,

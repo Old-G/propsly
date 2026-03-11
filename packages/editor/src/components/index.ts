@@ -1,3 +1,8 @@
 export { ProposalEditor } from "./proposal-editor"
 export { EditorToolbar } from "./editor-toolbar"
 export { SlashCommandMenu } from "./slash-command-menu"
+export { TestimonialBlockView } from "./testimonial-block-view"
+export { TocBlockView } from "./toc-block-view"
+export { ImageBlockView } from "./image-block-view"
+export { VideoBlockView } from "./video-block-view"
+export { DividerBlockView } from "./divider-block-view"

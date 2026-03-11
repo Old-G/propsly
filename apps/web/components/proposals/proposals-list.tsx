@@ -23,6 +23,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 import { deleteProposal, duplicateProposal } from "@/lib/actions/proposals"
+import { useInfiniteScroll } from "@/lib/hooks/use-infinite-scroll"
+import { useInfiniteList } from "@/lib/hooks/use-infinite-list"
+import { fetchProposalsPage } from "@/lib/actions/infinite-proposals"
 
 const STATUS_COLORS: Record<string, string> = {
   draft: "border-[var(--text-tertiary)]/30 text-[var(--text-tertiary)] bg-[var(--text-tertiary)]/10",
@@ -42,7 +45,7 @@ const STATUS_TABS = [
 ]
 
 function formatCurrency(amount: string | null, currency: string | null) {
-  if (!amount) return "—"
+  if (!amount) return "\u2014"
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: currency ?? "USD",
@@ -94,6 +97,7 @@ interface ProposalsListProps {
     sort: string
     order: string
   }
+  workspaceId: string
 }
 
 export function ProposalsList({
@@ -102,10 +106,36 @@ export function ProposalsList({
   currentPage,
   perPage,
   filters,
+  workspaceId,
 }: ProposalsListProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [searchValue, setSearchValue] = useState(filters.search)
+
+  // Infinite scroll
+  const fetchMore = useCallback(
+    async (offset: number) => {
+      const result = await fetchProposalsPage({
+        workspaceId,
+        offset,
+        limit: perPage,
+        status: filters.status === "all" ? undefined : filters.status,
+        search: filters.search || undefined,
+        sort: filters.sort,
+        order: filters.order,
+      })
+      return { items: result.proposals, totalCount: result.totalCount }
+    },
+    [workspaceId, perPage, filters]
+  )
+
+  const { items: allProposals, loadMore, loadingMore, hasMore } = useInfiniteList({
+    initialItems: proposals,
+    totalCount,
+    fetchMore,
+  })
+
+  const scrollRef = useInfiniteScroll(loadMore, hasMore, loadingMore)
 
   const updateParams = useCallback(
     (updates: Record<string, string>) => {
@@ -117,7 +147,7 @@ export function ProposalsList({
           params.delete(key)
         }
       })
-      if (!updates.page) params.delete("page")
+      params.delete("page")
       router.push(`/proposals?${params.toString()}`)
     },
     [router, searchParams]
@@ -126,8 +156,6 @@ export function ProposalsList({
   const handleSearch = useCallback(() => {
     updateParams({ search: searchValue })
   }, [searchValue, updateParams])
-
-  const totalPages = Math.ceil(totalCount / perPage)
 
   return (
     <div className="p-6 space-y-6">
@@ -176,7 +204,7 @@ export function ProposalsList({
       </div>
 
       {/* Empty state */}
-      {proposals.length === 0 && totalCount === 0 && !filters.search && filters.status === "all" ? (
+      {allProposals.length === 0 && totalCount === 0 && !filters.search && filters.status === "all" ? (
         <div className="flex flex-col items-center justify-center py-16">
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--accent-muted)]">
             <FileText className="h-8 w-8 text-[var(--accent)]" />
@@ -237,14 +265,14 @@ export function ProposalsList({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {proposals.length === 0 ? (
+                {allProposals.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={7} className="text-center py-8 text-[var(--text-secondary)]">
                       No proposals found
                     </TableCell>
                   </TableRow>
                 ) : (
-                  proposals.map((proposal) => (
+                  allProposals.map((proposal) => (
                     <TableRow
                       key={proposal.id}
                       className="cursor-pointer"
@@ -252,7 +280,7 @@ export function ProposalsList({
                     >
                       <TableCell className="font-medium">{proposal.title}</TableCell>
                       <TableCell className="text-[var(--text-secondary)]">
-                        {proposal.client_name || proposal.client_company || "—"}
+                        {proposal.client_name || proposal.client_company || "\u2014"}
                       </TableCell>
                       <TableCell>
                         <Badge
@@ -318,31 +346,19 @@ export function ProposalsList({
             </Table>
           </div>
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-[var(--text-secondary)]">
-                Showing {(currentPage - 1) * perPage + 1}–{Math.min(currentPage * perPage, totalCount)} of {totalCount}
-              </p>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={currentPage <= 1}
-                  onClick={() => updateParams({ page: String(currentPage - 1) })}
-                >
-                  Previous
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={currentPage >= totalPages}
-                  onClick={() => updateParams({ page: String(currentPage + 1) })}
-                >
-                  Next
-                </Button>
-              </div>
+          {/* Infinite scroll sentinel */}
+          <div ref={scrollRef} className="h-1" />
+          {loadingMore && (
+            <div className="py-4 text-center text-sm text-[var(--text-secondary)]">
+              Loading more...
             </div>
+          )}
+
+          {/* Count indicator */}
+          {allProposals.length > 0 && (
+            <p className="text-sm text-[var(--text-secondary)]">
+              Showing {allProposals.length} of {totalCount}
+            </p>
           )}
         </>
       )}

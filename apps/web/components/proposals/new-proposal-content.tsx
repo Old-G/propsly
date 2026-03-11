@@ -39,8 +39,7 @@ export function NewProposalContent({ templates, workspaceId, userId }: NewPropos
       return
     }
 
-    // For now, redirect to dashboard since editor isn't built yet
-    router.push("/dashboard")
+    router.push(`/proposals/${result.proposalId}/edit`)
   }
 
   return (

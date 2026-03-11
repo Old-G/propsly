@@ -68,6 +68,7 @@ export default async function ProposalsPage({ searchParams }: ProposalsPageProps
         sort: sortField,
         order: params.order ?? "desc",
       }}
+      workspaceId={workspaceId}
     />
   )
 }

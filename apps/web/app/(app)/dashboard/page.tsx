@@ -101,6 +101,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
         sort: sortField,
         order: params.order ?? "desc",
       }}
+      workspaceId={workspaceId}
     />
   )
 }

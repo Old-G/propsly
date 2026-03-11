@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@propsly/ui", "@propsly/config", "@propsly/db"],
+  transpilePackages: ["@propsly/ui", "@propsly/config", "@propsly/db", "@propsly/editor"],
   poweredByHeader: false,
   async headers() {
     return [

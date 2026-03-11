@@ -4,11 +4,30 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./components": "./src/components/index.ts",
+    "./extensions": "./src/extensions/index.ts"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@tiptap/core": "^2.11",
+    "@tiptap/extension-link": "^2.11",
+    "@tiptap/extension-placeholder": "^2.11",
+    "@tiptap/extension-underline": "^2.11",
+    "@tiptap/pm": "^2.11",
+    "@tiptap/react": "^2.11",
+    "@tiptap/starter-kit": "^2.11",
+    "@tiptap/suggestion": "^2.11",
+    "react": "^19",
+    "react-dom": "^19"
+  },
   "devDependencies": {
     "@propsly/config": "workspace:*",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "typescript": "^5"
+  },
+  "peerDependencies": {
+    "react": "^19",
+    "react-dom": "^19"
   }
 }

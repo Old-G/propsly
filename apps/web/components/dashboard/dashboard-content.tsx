@@ -24,6 +24,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 import { deleteProposal, duplicateProposal } from "@/lib/actions/proposals"
+import { useInfiniteScroll } from "@/lib/hooks/use-infinite-scroll"
+import { useInfiniteList } from "@/lib/hooks/use-infinite-list"
+import { fetchProposalsPage } from "@/lib/actions/infinite-proposals"
 
 const STATUS_COLORS: Record<string, string> = {
   draft: "border-[var(--text-tertiary)]/30 text-[var(--text-tertiary)] bg-[var(--text-tertiary)]/10",
@@ -56,7 +59,7 @@ interface Proposal {
 }
 
 function formatCurrency(amount: string | null, currency: string | null) {
-  if (!amount) return "—"
+  if (!amount) return "\u2014"
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: currency ?? "USD",
@@ -105,6 +108,7 @@ interface DashboardContentProps {
     sort: string
     order: string
   }
+  workspaceId: string
 }
 
 export function DashboardContent({
@@ -114,10 +118,36 @@ export function DashboardContent({
   currentPage,
   perPage,
   filters,
+  workspaceId,
 }: DashboardContentProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [searchValue, setSearchValue] = useState(filters.search)
+
+  // Infinite scroll
+  const fetchMore = useCallback(
+    async (offset: number) => {
+      const result = await fetchProposalsPage({
+        workspaceId,
+        offset,
+        limit: perPage,
+        status: filters.status === "all" ? undefined : filters.status,
+        search: filters.search || undefined,
+        sort: filters.sort,
+        order: filters.order,
+      })
+      return { items: result.proposals, totalCount: result.totalCount }
+    },
+    [workspaceId, perPage, filters]
+  )
+
+  const { items: allProposals, loadMore, loadingMore, hasMore } = useInfiniteList({
+    initialItems: proposals,
+    totalCount,
+    fetchMore,
+  })
+
+  const scrollRef = useInfiniteScroll(loadMore, hasMore, loadingMore)
 
   const updateParams = useCallback(
     (updates: Record<string, string>) => {
@@ -130,7 +160,7 @@ export function DashboardContent({
         }
       })
       // Reset page when filters change
-      if (!updates.page) params.delete("page")
+      params.delete("page")
       router.push(`/dashboard?${params.toString()}`)
     },
     [router, searchParams]
@@ -139,8 +169,6 @@ export function DashboardContent({
   const handleSearch = useCallback(() => {
     updateParams({ search: searchValue })
   }, [searchValue, updateParams])
-
-  const totalPages = Math.ceil(totalCount / perPage)
 
   // Empty state
   if (stats.total === 0) {
@@ -277,14 +305,14 @@ export function DashboardContent({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {proposals.length === 0 ? (
+            {allProposals.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} className="text-center py-8 text-[var(--text-secondary)]">
                   No proposals found
                 </TableCell>
               </TableRow>
             ) : (
-              proposals.map((proposal) => (
+              allProposals.map((proposal) => (
                 <TableRow
                   key={proposal.id}
                   className="cursor-pointer"
@@ -358,31 +386,19 @@ export function DashboardContent({
         </Table>
       </div>
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-[var(--text-secondary)]">
-            Showing {(currentPage - 1) * perPage + 1}&ndash;{Math.min(currentPage * perPage, totalCount)} of {totalCount}
-          </p>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={currentPage <= 1}
-              onClick={() => updateParams({ page: String(currentPage - 1) })}
-            >
-              Previous
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={currentPage >= totalPages}
-              onClick={() => updateParams({ page: String(currentPage + 1) })}
-            >
-              Next
-            </Button>
-          </div>
+      {/* Infinite scroll sentinel */}
+      <div ref={scrollRef} className="h-1" />
+      {loadingMore && (
+        <div className="py-4 text-center text-sm text-[var(--text-secondary)]">
+          Loading more...
         </div>
+      )}
+
+      {/* Count indicator */}
+      {allProposals.length > 0 && (
+        <p className="text-sm text-[var(--text-secondary)]">
+          Showing {allProposals.length} of {totalCount}
+        </p>
       )}
     </div>
   )

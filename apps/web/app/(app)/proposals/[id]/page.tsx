@@ -87,6 +87,11 @@ export default async function ProposalDetailPage({
           Back to Proposals
         </Link>
         <div className="flex gap-2">
+          <Button size="sm" asChild>
+            <Link href={`/proposals/${proposal.id}/edit`}>
+              Edit
+            </Link>
+          </Button>
           <Button variant="outline" size="sm" asChild>
             <a href={`/p/${proposal.slug}`} target="_blank" rel="noopener">
               <ExternalLink className="h-4 w-4" />

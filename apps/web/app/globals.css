@@ -224,13 +224,13 @@ body {
 /* Lists */
 .tiptap-editor ul {
   list-style-type: disc;
-  padding-left: 1.5em;
+  padding-left: 2em;
   margin: 0.75em 0;
 }
 
 .tiptap-editor ol {
   list-style-type: decimal;
-  padding-left: 1.5em;
+  padding-left: 2em;
   margin: 0.75em 0;
 }
 

@@ -7,6 +7,8 @@ export { VideoBlock, parseVideoUrl, type VideoProvider, type VideoBlockAttribute
 export { VideoBlockWithView } from "./video-block-with-view"
 export { DividerBlock, type DividerStyle, type DividerSpacing, type DividerBlockAttributes } from "./divider-block"
 export { DividerBlockWithView } from "./divider-block-with-view"
+export { PricingTable, type PricingTableRow, type PricingTableAttributes, type DiscountType } from "./pricing-table"
+export { PricingTableWithView } from "./pricing-table-with-view"
 export { Variable, AVAILABLE_VARIABLES, getVariableLabel, type VariableInfo } from "./variable"
 export { SignatureBlock, type SignatureBlockAttributes, type SignatureType } from "./signature-block"
 export { SignatureBlockWithView } from "./signature-block-with-view"

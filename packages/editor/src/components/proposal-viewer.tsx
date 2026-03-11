@@ -12,8 +12,9 @@ import { TestimonialBlock } from "../extensions/testimonial-block"
 import { TableOfContents } from "../extensions/toc-block"
 import { ImageBlockWithView } from "../extensions/image-block"
 import { ImageBlockView } from "./image-block-view"
+import { PricingTableWithView } from "../extensions/pricing-table-with-view"
 import { Variable, getVariableLabel } from "../extensions/variable"
-import { SignatureBlock } from "../extensions/signature-block"
+import { SignatureBlockWithView } from "../extensions/signature-block-with-view"
 
 export interface ProposalViewerProps {
   content: JSONContent
@@ -78,8 +79,9 @@ export function ProposalViewer({ content, variables }: ProposalViewerProps) {
       TestimonialBlock,
       TableOfContents,
       ImageBlockWithView(ImageBlockView),
+      PricingTableWithView,
       Variable,
-      SignatureBlock,
+      SignatureBlockWithView,
       Underline,
       Link.configure({
         openOnClick: true,

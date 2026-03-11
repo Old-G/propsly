@@ -16,6 +16,7 @@ import { TestimonialBlock } from "../extensions/testimonial-block"
 import { TableOfContents } from "../extensions/toc-block"
 import { ImageBlockWithView } from "../extensions/image-block"
 import { ImageBlockView } from "./image-block-view"
+import { PricingTableWithView } from "../extensions/pricing-table-with-view"
 
 export interface ProposalEditorProps {
   content?: JSONContent
@@ -45,6 +46,7 @@ export function ProposalEditor({
       TestimonialBlock,
       TableOfContents,
       ImageBlockWithView(ImageBlockView),
+      PricingTableWithView,
       Underline,
       Link.configure({
         openOnClick: false,

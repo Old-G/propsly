@@ -114,6 +114,14 @@ export const slashCommandItems: SlashCommandItem[] = [
       editor.chain().focus().deleteRange(range).insertTableOfContents().run()
     },
   },
+  {
+    title: "Pricing Table",
+    description: "Interactive pricing with totals",
+    icon: "$",
+    command: ({ editor, range }) => {
+      editor.chain().focus().deleteRange(range).insertPricingTable().run()
+    },
+  },
 ]
 
 export const SlashCommandPluginKey = new PluginKey("slashCommand")

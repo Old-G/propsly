@@ -1,4 +1,5 @@
 export { ProposalEditor } from "./proposal-editor"
+export { ProposalViewer } from "./proposal-viewer"
 export { EditorToolbar } from "./editor-toolbar"
 export { SlashCommandMenu } from "./slash-command-menu"
 export { TestimonialBlockView } from "./testimonial-block-view"

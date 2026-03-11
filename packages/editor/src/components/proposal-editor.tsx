@@ -62,7 +62,12 @@ export function ProposalEditor({
         },
       }),
       Placeholder.configure({
-        placeholder: 'Start typing or press "/" for commands...',
+        placeholder: ({ node }) => {
+          if (node.type.name === "heading") {
+            return `Heading ${node.attrs.level}`
+          }
+          return 'Type something or press "/" for blocks, formatting & more...'
+        },
       }),
       SlashCommand.configure({
         suggestion: {
@@ -109,7 +114,7 @@ export function ProposalEditor({
     editorProps: {
       attributes: {
         class:
-          "prose prose-invert max-w-none min-h-[500px] focus:outline-none px-12 py-8",
+          "tiptap-editor max-w-none min-h-[500px] focus:outline-none px-12 py-8",
       },
     },
   })

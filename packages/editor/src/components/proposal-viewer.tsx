@@ -95,7 +95,7 @@ export function ProposalViewer({ content, variables }: ProposalViewerProps) {
     editorProps: {
       attributes: {
         class:
-          "prose prose-invert max-w-none focus:outline-none",
+          "tiptap-editor max-w-none focus:outline-none",
       },
     },
   })

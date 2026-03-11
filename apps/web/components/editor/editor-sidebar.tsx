@@ -1,12 +1,16 @@
 "use client"
 
 import { useState } from "react"
-import { X } from "lucide-react"
+import { X, CalendarIcon } from "lucide-react"
+import { format } from "date-fns"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
+import { Calendar } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { updateProposalSettings } from "@/lib/actions/editor"
+import { cn } from "@/lib/utils"
 
 interface EditorSidebarProps {
   proposal: {
@@ -26,11 +30,20 @@ interface EditorSidebarProps {
 export function EditorSidebar({ proposal, onClose }: EditorSidebarProps) {
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
+  const [expiresDate, setExpiresDate] = useState<Date | undefined>(
+    proposal.expiresAt ? new Date(proposal.expiresAt) : undefined
+  )
+  const [calendarOpen, setCalendarOpen] = useState(false)
 
   async function handleSubmit(formData: FormData) {
     setSaving(true)
     setMessage(null)
     formData.set("id", proposal.id)
+    if (expiresDate) {
+      formData.set("expires_at", format(expiresDate, "yyyy-MM-dd"))
+    } else {
+      formData.set("expires_at", "")
+    }
     const result = await updateProposalSettings(formData)
     if (result.error) {
       setMessage(result.error)
@@ -96,8 +109,50 @@ export function EditorSidebar({ proposal, onClose }: EditorSidebarProps) {
         <Separator />
 
         <div>
-          <Label htmlFor="expires_at">Expires At</Label>
-          <Input id="expires_at" name="expires_at" defaultValue={proposal.expiresAt ? proposal.expiresAt.split("T")[0] : ""} type="date" className="mt-1" />
+          <Label>Expires At</Label>
+          <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                type="button"
+                variant="outline"
+                className={cn(
+                  "mt-1 w-full justify-start text-left font-normal",
+                  !expiresDate && "text-[var(--text-tertiary)]"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {expiresDate ? format(expiresDate, "PPP") : "Pick a date"}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={expiresDate}
+                onSelect={(date) => {
+                  setExpiresDate(date)
+                  setCalendarOpen(false)
+                }}
+                disabled={(date) => date < new Date()}
+                initialFocus
+              />
+              {expiresDate && (
+                <div className="border-t border-[var(--border-default)] p-2">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="w-full text-xs"
+                    onClick={() => {
+                      setExpiresDate(undefined)
+                      setCalendarOpen(false)
+                    }}
+                  >
+                    Clear date
+                  </Button>
+                </div>
+              )}
+            </PopoverContent>
+          </Popover>
         </div>
 
         {message && (

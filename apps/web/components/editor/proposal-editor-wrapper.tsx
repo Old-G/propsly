@@ -189,6 +189,7 @@ export function ProposalEditorWrapper({ proposal }: ProposalEditorWrapperProps) 
         {sidebarOpen && (
           <EditorSidebar
             proposal={proposal}
+            workspaceId={proposal.workspaceId}
             onClose={() => setSidebarOpen(false)}
           />
         )}

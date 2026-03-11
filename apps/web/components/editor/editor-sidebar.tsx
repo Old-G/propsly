@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { X, CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
 import { Button } from "@/components/ui/button"
@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { ClientAutocomplete } from "./client-autocomplete"
 import { updateProposalSettings } from "@/lib/actions/editor"
 import { cn } from "@/lib/utils"
 
@@ -24,21 +25,35 @@ interface EditorSidebarProps {
     totalAmount: string
     expiresAt: string
   }
+  workspaceId: string
   onClose: () => void
 }
 
-export function EditorSidebar({ proposal, onClose }: EditorSidebarProps) {
+export function EditorSidebar({ proposal, workspaceId, onClose }: EditorSidebarProps) {
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
   const [expiresDate, setExpiresDate] = useState<Date | undefined>(
     proposal.expiresAt ? new Date(proposal.expiresAt) : undefined
   )
   const [calendarOpen, setCalendarOpen] = useState(false)
+  const emailRef = useRef<HTMLInputElement>(null)
+  const companyRef = useRef<HTMLInputElement>(null)
+
+  function handleContactSelect(contact: { name: string; email: string | null; company: string | null }) {
+    // Auto-fill email and company from selected contact
+    if (emailRef.current && contact.email) {
+      emailRef.current.value = contact.email
+    }
+    if (companyRef.current && contact.company) {
+      companyRef.current.value = contact.company
+    }
+  }
 
   async function handleSubmit(formData: FormData) {
     setSaving(true)
     setMessage(null)
     formData.set("id", proposal.id)
+    formData.set("workspace_id", workspaceId)
     if (expiresDate) {
       formData.set("expires_at", format(expiresDate, "yyyy-MM-dd"))
     } else {
@@ -79,17 +94,25 @@ export function EditorSidebar({ proposal, onClose }: EditorSidebarProps) {
 
         <div>
           <Label htmlFor="client_name">Name</Label>
-          <Input id="client_name" name="client_name" defaultValue={proposal.clientName} className="mt-1" />
+          <ClientAutocomplete
+            workspaceId={workspaceId}
+            id="client_name"
+            name="client_name"
+            defaultValue={proposal.clientName}
+            placeholder="Start typing to search contacts..."
+            className="mt-1"
+            onSelectContact={handleContactSelect}
+          />
         </div>
 
         <div>
           <Label htmlFor="client_email">Email</Label>
-          <Input id="client_email" name="client_email" defaultValue={proposal.clientEmail} type="email" className="mt-1" />
+          <Input ref={emailRef} id="client_email" name="client_email" defaultValue={proposal.clientEmail} type="email" className="mt-1" />
         </div>
 
         <div>
           <Label htmlFor="client_company">Company</Label>
-          <Input id="client_company" name="client_company" defaultValue={proposal.clientCompany} className="mt-1" />
+          <Input ref={companyRef} id="client_company" name="client_company" defaultValue={proposal.clientCompany} className="mt-1" />
         </div>
 
         <Separator />

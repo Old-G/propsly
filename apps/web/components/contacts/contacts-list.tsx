@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useState, useTransition } from "react"
+import { useRouter } from "next/navigation"
 import { Users, Plus, MoreHorizontal, Pencil, Trash2, Search } from "lucide-react"
 import { useInfiniteScroll } from "@/lib/hooks/use-infinite-scroll"
 import { useInfiniteList } from "@/lib/hooks/use-infinite-list"
@@ -40,6 +41,7 @@ export function ContactsList({
   workspaceId,
   perPage,
 }: ContactsListProps) {
+  const router = useRouter()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editingContact, setEditingContact] = useState<Contact | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
@@ -159,7 +161,8 @@ export function ContactsList({
                 {filteredContacts.map((contact) => (
                   <tr
                     key={contact.id}
-                    className="border-b border-[var(--border-default)] last:border-0 hover:bg-[var(--bg-surface-hover)] transition-colors"
+                    className="border-b border-[var(--border-default)] last:border-0 hover:bg-[var(--bg-surface-hover)] transition-colors cursor-pointer"
+                    onClick={() => router.push(`/contacts/${contact.id}`)}
                   >
                     <td className="px-4 py-3 font-medium">{contact.name}</td>
                     <td className="px-4 py-3 text-[var(--text-secondary)]">

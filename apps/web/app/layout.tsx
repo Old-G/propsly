@@ -3,6 +3,8 @@ import { GeistSans } from 'geist/font/sans'
 import type { Metadata, Viewport } from 'next'
 import { Instrument_Serif } from 'next/font/google'
 import { Toaster } from 'sonner'
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import './globals.css'
 import { QueryProvider } from '@/components/providers/query-provider'
 
@@ -67,6 +69,8 @@ export default function RootLayout({
           {children}
         </QueryProvider>
         <Toaster theme="dark" />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )

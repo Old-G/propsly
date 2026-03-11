@@ -26,13 +26,13 @@ export default function BlogPostLoading() {
 
         {/* Content lines */}
         <div className="space-y-4">
-          {Array.from({ length: 8 }).map((_, i) => (
+          {[95, 88, 72, 90, 78, 85, 70, 92].map((width, i) => (
             <div
               key={i}
               className="h-5 rounded-md animate-pulse"
               style={{
                 backgroundColor: "var(--bg-surface)",
-                width: `${70 + Math.random() * 30}%`,
+                width: `${width}%`,
                 animationDelay: `${i * 0.05}s`,
               }}
             />

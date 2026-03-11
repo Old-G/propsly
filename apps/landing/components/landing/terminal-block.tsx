@@ -56,11 +56,10 @@ export function TerminalBlock() {
   const [started, setStarted] = useState(false);
   const [commandDone, setCommandDone] = useState(false);
 
-  useEffect(() => {
-    if (isInView && !started) {
-      setStarted(true);
-    }
-  }, [isInView, started]);
+  const shouldStart = isInView && !started;
+  if (shouldStart) {
+    setStarted(true);
+  }
 
   return (
     <div

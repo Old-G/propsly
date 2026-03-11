@@ -7,6 +7,20 @@ interface SignRequestBody {
   signatureData?: string
 }
 
+const MAX_NAME_LENGTH = 200
+const MAX_SIGNATURE_DATA_LENGTH = 500_000 // ~500KB for drawn SVG/data URL
+
+/** Strip HTML tags to prevent XSS in stored signature name */
+function stripHtmlTags(str: string): string {
+  return str.replace(/<[^>]*>/g, "").trim()
+}
+
+/** Validate that drawn signature data is a valid data URL (image) */
+function isValidSignatureDataUrl(data: string): boolean {
+  // Accept data URLs for images (PNG, JPEG, SVG) which are typical for drawn signatures
+  return /^data:image\/(png|jpeg|jpg|svg\+xml);base64,[A-Za-z0-9+/=]+$/.test(data)
+}
+
 interface ProposalContent {
   type: string
   content?: ProposalContent[]
@@ -81,12 +95,42 @@ export async function POST(
       )
     }
 
+    // Sanitize name: strip HTML tags and enforce length limit
+    const sanitizedName = stripHtmlTags(body.name).slice(0, MAX_NAME_LENGTH)
+    if (!sanitizedName) {
+      return NextResponse.json(
+        { error: "Name is required" },
+        { status: 400 }
+      )
+    }
+
+    // Validate signature data format
+    if (body.signatureType === "drawn" && body.signatureData) {
+      if (body.signatureData.length > MAX_SIGNATURE_DATA_LENGTH) {
+        return NextResponse.json(
+          { error: "Signature data is too large" },
+          { status: 400 }
+        )
+      }
+      if (!isValidSignatureDataUrl(body.signatureData)) {
+        return NextResponse.json(
+          { error: "Invalid signature data format. Expected a base64-encoded image data URL." },
+          { status: 400 }
+        )
+      }
+    }
+
+    // For typed signatures, sanitize the data (it's just the name text)
+    const sanitizedSignatureData = body.signatureType === "typed"
+      ? stripHtmlTags(body.signatureData ?? "").slice(0, MAX_NAME_LENGTH)
+      : (body.signatureData ?? "")
+
     const supabase = await createClient()
 
     // Fetch the proposal
     const { data: proposal, error: fetchError } = await supabase
       .from("proposals")
-      .select("id, status, content")
+      .select("id, status, content, workspace_id")
       .eq("id", proposalId)
       .single()
 
@@ -97,11 +141,26 @@ export async function POST(
       )
     }
 
-    // Validate proposal status
+    // Verify the proposal belongs to a valid workspace
+    if (!proposal.workspace_id) {
+      return NextResponse.json(
+        { error: "Invalid proposal" },
+        { status: 400 }
+      )
+    }
+
+    // Validate proposal status — only "sent" or "viewed" proposals can be signed
     if (proposal.status === "signed") {
       return NextResponse.json(
         { error: "This proposal has already been signed" },
         { status: 409 }
+      )
+    }
+
+    if (proposal.status === "draft") {
+      return NextResponse.json(
+        { error: "This proposal has not been sent yet" },
+        { status: 400 }
       )
     }
 
@@ -113,7 +172,7 @@ export async function POST(
     }
 
     const signedAt = new Date().toISOString()
-    const signatureData = body.signatureData ?? ""
+    const signatureData = sanitizedSignatureData
 
     // Update the signatureBlock node in the content
     const content = proposal.content as ProposalContent | null
@@ -122,7 +181,7 @@ export async function POST(
     if (content) {
       updatedContent = updateSignatureBlockInContent(
         content,
-        body.name.trim(),
+        sanitizedName,
         signedAt,
         body.signatureType,
         signatureData

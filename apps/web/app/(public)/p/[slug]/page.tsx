@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation"
 import { cookies, headers } from "next/headers"
+import { createHmac, timingSafeEqual } from "crypto"
 import type { Metadata } from "next"
 import { createClient } from "@/lib/supabase/server"
 import { ProposalViewerClient } from "./proposal-viewer-client"
@@ -130,6 +131,30 @@ function isExpired(expiresAt: string | null): boolean {
   return new Date(expiresAt) < new Date()
 }
 
+/**
+ * Generate a signed access token for password-protected proposals.
+ * Token = HMAC-SHA256(proposalId + passwordHash, secret)
+ * This ensures the cookie can only be validly set after server-side password verification.
+ */
+function generateAccessToken(proposalId: string, passwordHash: string): string {
+  const secret = process.env.PROPOSAL_ACCESS_SECRET || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "propsly-fallback-secret"
+  return createHmac("sha256", secret)
+    .update(`${proposalId}:${passwordHash}`)
+    .digest("hex")
+}
+
+function verifyAccessToken(token: string, proposalId: string, passwordHash: string): boolean {
+  const expected = generateAccessToken(proposalId, passwordHash)
+  try {
+    const tokenBuf = Buffer.from(token, "hex")
+    const expectedBuf = Buffer.from(expected, "hex")
+    if (tokenBuf.length !== expectedBuf.length) return false
+    return timingSafeEqual(tokenBuf, expectedBuf)
+  } catch {
+    return false
+  }
+}
+
 export default async function ProposalViewPage({ params, searchParams }: PageProps) {
   const { slug } = await params
   const { pdf } = await searchParams
@@ -146,8 +171,8 @@ export default async function ProposalViewPage({ params, searchParams }: PagePro
     notFound()
   }
 
-  // Draft proposals are not publicly viewable (skip check in PDF mode for internal rendering)
-  if (proposal.status === "draft" && !isPdfMode) {
+  // Draft proposals are not publicly viewable
+  if (proposal.status === "draft") {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
         <div className="mb-4 text-6xl">
@@ -211,12 +236,15 @@ export default async function ProposalViewPage({ params, searchParams }: PagePro
     )
   }
 
-  // --- Password Protection (skip in PDF mode) ---
+  // --- Password Protection ---
   const hasPassword = Boolean(proposal.password_hash)
-  if (hasPassword && !isPdfMode) {
+  if (hasPassword) {
     const cookieStore = await cookies()
     const accessCookie = cookieStore.get(`proposal_access_${slug}`)
-    if (!accessCookie?.value) {
+    const isValidToken = accessCookie?.value
+      ? verifyAccessToken(accessCookie.value, proposal.id, proposal.password_hash as string)
+      : false
+    if (!isValidToken) {
       return (
         <PasswordGate
           proposalId={proposal.id}

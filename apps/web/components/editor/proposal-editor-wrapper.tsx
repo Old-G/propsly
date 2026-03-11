@@ -3,7 +3,19 @@
 import { useState, useCallback, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { type JSONContent } from "@tiptap/core"
-import { ProposalEditor } from "@propsly/editor"
+import dynamic from "next/dynamic"
+
+const ProposalEditor = dynamic(
+  () => import("@propsly/editor").then((m) => ({ default: m.ProposalEditor })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="animate-pulse text-[var(--text-tertiary)]">Loading editor...</div>
+      </div>
+    ),
+  }
+)
 import { ArrowLeft, Check, Loader2, AlertCircle, Download, Settings, Eye } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { EditorSidebar } from "./editor-sidebar"

@@ -3,6 +3,9 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   transpilePackages: ["@propsly/ui", "@propsly/config", "@propsly/db", "@propsly/editor"],
   poweredByHeader: false,
+  experimental: {
+    optimizePackageImports: ["lucide-react", "recharts", "framer-motion", "date-fns"],
+  },
   async headers() {
     return [
       {

@@ -25,11 +25,11 @@ export function PasswordGate({ proposalId, slug, proposalTitle }: PasswordGatePr
         body: JSON.stringify({ password, proposalId }),
       })
 
-      const data = (await res.json()) as { success?: boolean; error?: string }
+      const data = (await res.json()) as { success?: boolean; error?: string; accessToken?: string }
 
-      if (data.success) {
-        // Set access cookie and reload to show content
-        document.cookie = `proposal_access_${slug}=true; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`
+      if (data.success && data.accessToken) {
+        // Set signed access token cookie and reload to show content
+        document.cookie = `proposal_access_${slug}=${data.accessToken}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`
         window.location.reload()
       } else {
         setError(data.error ?? "Incorrect password")

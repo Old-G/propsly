@@ -57,11 +57,21 @@ export async function searchContacts(workspaceId: string, query: string) {
 
   if (!user) return { contacts: [] }
 
+  // Sanitize query: escape PostgREST special characters to prevent filter injection
+  const sanitized = query
+    .replace(/\\/g, "\\\\")
+    .replace(/%/g, "\\%")
+    .replace(/_/g, "\\_")
+    .replace(/\(/g, "\\(")
+    .replace(/\)/g, "\\)")
+    .replace(/,/g, "\\,")
+    .replace(/\./g, "\\.")
+
   const { data } = await supabase
     .from("contacts")
     .select("id, name, email, company")
     .eq("workspace_id", workspaceId)
-    .or(`name.ilike.%${query}%,email.ilike.%${query}%,company.ilike.%${query}%`)
+    .or(`name.ilike.%${sanitized}%,email.ilike.%${sanitized}%,company.ilike.%${sanitized}%`)
     .order("name")
     .limit(5)
 

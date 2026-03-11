@@ -17,11 +17,25 @@ export async function POST(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    // Verify user belongs to workspace that owns this proposal
     const { data: proposal } = await supabase
       .from("proposals")
-      .select("id, status")
+      .select("id, status, workspace_id")
       .eq("id", id)
       .single()
+
+    if (proposal) {
+      const { data: member } = await supabase
+        .from("workspace_members")
+        .select("id")
+        .eq("workspace_id", proposal.workspace_id)
+        .eq("user_id", user.id)
+        .single()
+
+      if (!member) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+      }
+    }
 
     if (!proposal) {
       return NextResponse.json({ error: "Not found" }, { status: 404 })

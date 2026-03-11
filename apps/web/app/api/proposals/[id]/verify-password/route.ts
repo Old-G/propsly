@@ -1,9 +1,18 @@
 import { NextRequest, NextResponse } from "next/server"
+import { createHmac } from "crypto"
 import { createClient } from "@/lib/supabase/server"
 
 interface VerifyPasswordBody {
   password: string
   proposalId: string
+  slug?: string
+}
+
+function generateAccessToken(proposalId: string, passwordHash: string): string {
+  const secret = process.env.PROPOSAL_ACCESS_SECRET || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "propsly-fallback-secret"
+  return createHmac("sha256", secret)
+    .update(`${proposalId}:${passwordHash}`)
+    .digest("hex")
 }
 
 /**
@@ -75,7 +84,10 @@ export async function POST(
       )
     }
 
-    return NextResponse.json({ success: true })
+    // Generate a signed access token that the server can verify
+    const accessToken = generateAccessToken(proposal.id, proposal.password_hash as string)
+
+    return NextResponse.json({ success: true, accessToken })
   } catch {
     return NextResponse.json(
       { success: false, error: "Internal server error" },

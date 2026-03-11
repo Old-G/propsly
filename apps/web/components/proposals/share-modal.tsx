@@ -46,10 +46,13 @@ export function ShareModal({
       setCopied(true)
       toast.success("Link copied to clipboard")
       setTimeout(() => setCopied(false), 2000)
+
+      // Mark proposal as sent so the public link works
+      await fetch(`/api/proposals/${proposalId}/publish`, { method: "POST" })
     } catch {
       toast.error("Failed to copy link")
     }
-  }, [publicUrl])
+  }, [publicUrl, proposalId])
 
   const handleSend = useCallback(async () => {
     if (!email.trim()) {

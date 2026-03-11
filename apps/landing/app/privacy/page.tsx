@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Header } from "@/components/shared/header";
 import { Footer } from "@/components/shared/footer";
 
@@ -173,9 +174,9 @@ export default function PrivacyPage() {
             </h2>
             <p>
               For privacy-related inquiries,{" "}
-              <a href="/contact" className="text-[var(--accent)] hover:underline">
+              <Link href="/contact" className="text-[var(--accent)] hover:underline">
                 contact us here
-              </a>
+              </Link>
               .
             </p>
           </section>

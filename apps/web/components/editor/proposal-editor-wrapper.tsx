@@ -7,6 +7,7 @@ import { ProposalEditor } from "@propsly/editor"
 import { ArrowLeft, Check, Loader2, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { EditorSidebar } from "./editor-sidebar"
+import { SaveAsTemplateModal } from "./save-as-template-modal"
 import { saveProposalContent } from "@/lib/actions/editor"
 import { uploadProposalImage } from "@/lib/actions/upload"
 import Link from "next/link"
@@ -154,6 +155,8 @@ export function ProposalEditorWrapper({ proposal }: ProposalEditorWrapperProps) 
             )}
           </div>
 
+          <SaveAsTemplateModal proposalId={proposal.id} />
+
           <Button
             variant="outline"
             size="sm"
@@ -167,9 +170,9 @@ export function ProposalEditorWrapper({ proposal }: ProposalEditorWrapperProps) 
             variant="outline"
             asChild
           >
-            <a href={`/p/${proposal.slug}`} target="_blank" rel="noopener">
+            <Link href={`/p/${proposal.slug}`} target="_blank" rel="noopener">
               Preview
-            </a>
+            </Link>
           </Button>
         </div>
       </div>

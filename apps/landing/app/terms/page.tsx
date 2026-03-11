@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Header } from "@/components/shared/header";
 import { Footer } from "@/components/shared/footer";
 
@@ -84,9 +85,9 @@ export default function TermsPage() {
             </h2>
             <p>
               Your use of the Service is also governed by our{" "}
-              <a href="/privacy" className="text-[var(--accent)] hover:underline">
+              <Link href="/privacy" className="text-[var(--accent)] hover:underline">
                 Privacy Policy
-              </a>
+              </Link>
               . By using the Service, you consent to the collection and use of information as
               described in the Privacy Policy.
             </p>
@@ -141,9 +142,9 @@ export default function TermsPage() {
             </h2>
             <p>
               For questions about these terms,{" "}
-              <a href="/contact" className="text-[var(--accent)] hover:underline">
+              <Link href="/contact" className="text-[var(--accent)] hover:underline">
                 contact us here
-              </a>
+              </Link>
               .
             </p>
           </section>

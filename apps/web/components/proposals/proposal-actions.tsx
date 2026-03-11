@@ -26,10 +26,10 @@ export function ProposalActions({
           <Link href={`/proposals/${proposalId}/edit`}>Edit</Link>
         </Button>
         <Button variant="outline" size="sm" asChild>
-          <a href={`/p/${proposalSlug}`} target="_blank" rel="noopener">
+          <Link href={`/p/${proposalSlug}`} target="_blank" rel="noopener">
             <ExternalLink className="h-4 w-4" />
             Preview
-          </a>
+          </Link>
         </Button>
         <Button size="sm" onClick={() => setShareOpen(true)}>
           <Send className="h-4 w-4" />

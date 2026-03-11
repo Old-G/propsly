@@ -26,8 +26,31 @@ export const metadata: Metadata = {
     default: 'Propsly',
     template: '%s — Propsly',
   },
-  description: 'Create beautiful interactive proposals as web pages.',
+  description: 'Create beautiful interactive proposals as web pages. Interactive pricing, view tracking, e-signatures.',
   metadataBase: new URL(BASE_URL),
+  openGraph: {
+    title: 'Propsly — Proposal Platform',
+    description: 'Create beautiful interactive proposals as web pages. Interactive pricing, view tracking, e-signatures.',
+    siteName: 'Propsly',
+    type: 'website',
+    locale: 'en_US',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Propsly — Proposal Platform',
+    description: 'Create beautiful interactive proposals as web pages.',
+    site: '@oldg9516',
+    creator: '@oldg9516',
+  },
+  robots: {
+    index: false,
+    follow: false,
+  },
+  icons: {
+    icon: '/icon.svg',
+    apple: '/apple-icon.png',
+  },
+  manifest: '/manifest.webmanifest',
 }
 
 export default function RootLayout({

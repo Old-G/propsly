@@ -1,0 +1,14 @@
+{
+  "name": "@propsly/editor",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@propsly/config": "workspace:*",
+    "typescript": "^5"
+  }
+}

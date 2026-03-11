@@ -1,0 +1,28 @@
+{
+  "name": "@propsly/db",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./schema": "./src/schema/index.ts",
+    "./schemas": "./src/schemas/index.ts",
+    "./client": "./src/client.ts"
+  },
+  "scripts": {
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "db:push": "drizzle-kit push"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.38",
+    "postgres": "^3.4",
+    "zod": "^3.24"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.30",
+    "@propsly/config": "workspace:*",
+    "typescript": "^5"
+  }
+}

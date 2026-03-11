@@ -1,0 +1,22 @@
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "3002:3002"
+    env_file:
+      - ../.env
+    depends_on:
+      - gotenberg
+    restart: unless-stopped
+
+  gotenberg:
+    image: gotenberg/gotenberg:8
+    ports:
+      - "3003:3003"
+    command:
+      - "gotenberg"
+      - "--api-port=3003"
+      - "--api-timeout=30s"
+    restart: unless-stopped

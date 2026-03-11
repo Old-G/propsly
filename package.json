@@ -11,7 +11,11 @@
     "build:landing": "pnpm --filter @propsly/landing build",
     "lint:landing": "pnpm --filter @propsly/landing lint",
     "dev:web": "pnpm --filter @propsly/web dev",
-    "build:web": "pnpm --filter @propsly/web build"
+    "build:web": "pnpm --filter @propsly/web build",
+    "lint:web": "pnpm --filter @propsly/web lint",
+    "db:generate": "pnpm --filter @propsly/db db:generate",
+    "db:migrate": "pnpm --filter @propsly/db db:migrate",
+    "db:studio": "pnpm --filter @propsly/db db:studio"
   },
   "pnpm": {
     "onlyBuiltDependencies": ["sharp", "unrs-resolver"]

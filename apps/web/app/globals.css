@@ -1,5 +1,21 @@
 @import "tailwindcss";
 
+/* Override Tailwind Preflight reset for TipTap editor lists */
+.ProseMirror ul,
+.tiptap-editor ul {
+  list-style-type: disc !important;
+  padding-left: 2em !important;
+}
+.ProseMirror ol,
+.tiptap-editor ol {
+  list-style-type: decimal !important;
+  padding-left: 2em !important;
+}
+.ProseMirror li,
+.tiptap-editor li {
+  display: list-item !important;
+}
+
 :root {
   /* Backgrounds */
   --bg-primary: #0a0a0a;

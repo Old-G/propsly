@@ -7,3 +7,6 @@ export { VideoBlock, parseVideoUrl, type VideoProvider, type VideoBlockAttribute
 export { VideoBlockWithView } from "./video-block-with-view"
 export { DividerBlock, type DividerStyle, type DividerSpacing, type DividerBlockAttributes } from "./divider-block"
 export { DividerBlockWithView } from "./divider-block-with-view"
+export { Variable, AVAILABLE_VARIABLES, getVariableLabel, type VariableInfo } from "./variable"
+export { SignatureBlock, type SignatureBlockAttributes, type SignatureType } from "./signature-block"
+export { SignatureBlockWithView } from "./signature-block-with-view"

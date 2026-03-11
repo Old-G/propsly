@@ -10,6 +10,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { EditorToolbar } from "./editor-toolbar"
 import { SlashCommand, slashCommandSuggestion } from "../extensions/slash-command"
 import { SlashCommandMenu } from "./slash-command-menu"
+import { VariablePicker } from "./variable-picker"
 import { VideoBlockWithView } from "../extensions/video-block-with-view"
 import { DividerBlockWithView } from "../extensions/divider-block-with-view"
 import { TestimonialBlock } from "../extensions/testimonial-block"
@@ -17,6 +18,8 @@ import { TableOfContents } from "../extensions/toc-block"
 import { ImageBlockWithView } from "../extensions/image-block"
 import { ImageBlockView } from "./image-block-view"
 import { PricingTableWithView } from "../extensions/pricing-table-with-view"
+import { Variable } from "../extensions/variable"
+import { SignatureBlockWithView } from "../extensions/signature-block-with-view"
 
 export interface ProposalEditorProps {
   content?: JSONContent
@@ -30,10 +33,12 @@ export function ProposalEditor({
   editable = true,
 }: ProposalEditorProps) {
   const [slashCommandState, setSlashCommandState] = useState<{
-    items: any[]
-    command: (item: any) => void
+    items: Array<{ title: string; description: string; icon: string; command: (props: { editor: unknown; range: unknown }) => void }>
+    command: (item: { title: string; description: string; icon: string; command: (props: { editor: unknown; range: unknown }) => void }) => void
     clientRect: (() => DOMRect | null) | null
   } | null>(null)
+  const [showVariablePicker, setShowVariablePicker] = useState(false)
+  const variablePickerRectRef = useRef<(() => DOMRect | null) | null>(null)
 
   const editor = useEditor({
     extensions: [
@@ -47,6 +52,8 @@ export function ProposalEditor({
       TableOfContents,
       ImageBlockWithView(ImageBlockView),
       PricingTableWithView,
+      Variable,
+      SignatureBlockWithView,
       Underline,
       Link.configure({
         openOnClick: false,
@@ -107,6 +114,40 @@ export function ProposalEditor({
     },
   })
 
+  // Listen for the custom event to open the variable picker
+  useEffect(() => {
+    const handleOpenVariablePicker = () => {
+      if (!editor) return
+      // Get cursor position for menu placement
+      const { view } = editor
+      const { from } = view.state.selection
+      const coords = view.coordsAtPos(from)
+      variablePickerRectRef.current = () => ({
+        top: coords.top,
+        bottom: coords.bottom,
+        left: coords.left,
+        right: coords.left,
+        width: 0,
+        height: coords.bottom - coords.top,
+        x: coords.left,
+        y: coords.top,
+        toJSON: () => ({}),
+      })
+      setShowVariablePicker(true)
+    }
+
+    document.addEventListener(
+      "propsly:open-variable-picker",
+      handleOpenVariablePicker
+    )
+    return () => {
+      document.removeEventListener(
+        "propsly:open-variable-picker",
+        handleOpenVariablePicker
+      )
+    }
+  }, [editor])
+
   return (
     <div className="relative">
       {editable && editor && <EditorToolbar editor={editor} />}
@@ -116,6 +157,13 @@ export function ProposalEditor({
           items={slashCommandState.items}
           command={slashCommandState.command}
           clientRect={slashCommandState.clientRect}
+        />
+      )}
+      {showVariablePicker && editor && (
+        <VariablePicker
+          editor={editor}
+          onClose={() => setShowVariablePicker(false)}
+          clientRect={variablePickerRectRef.current}
         />
       )}
     </div>

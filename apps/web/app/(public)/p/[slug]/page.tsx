@@ -4,6 +4,37 @@ import type { Metadata } from "next"
 import { createClient } from "@/lib/supabase/server"
 import { ProposalViewerClient } from "./proposal-viewer-client"
 
+interface ContentNode {
+  type: string
+  content?: ContentNode[]
+  attrs?: Record<string, unknown>
+}
+
+interface SignatureInfo {
+  signedBy: string
+  signedAt: string
+  signatureData: string
+  signatureType: "typed" | "drawn" | "none"
+}
+
+function findSignatureBlock(node: ContentNode): SignatureInfo | null {
+  if (node.type === "signatureBlock" && node.attrs) {
+    return {
+      signedBy: (node.attrs.signedBy as string) ?? "",
+      signedAt: (node.attrs.signedAt as string) ?? "",
+      signatureData: (node.attrs.signatureData as string) ?? "",
+      signatureType: (node.attrs.signatureType as "typed" | "drawn" | "none") ?? "none",
+    }
+  }
+  if (node.content && Array.isArray(node.content)) {
+    for (const child of node.content) {
+      const found = findSignatureBlock(child)
+      if (found) return found
+    }
+  }
+  return null
+}
+
 interface PageProps {
   params: Promise<{ slug: string }>
 }
@@ -116,6 +147,32 @@ export default async function ProposalViewPage({ params }: PageProps) {
 
   const content = proposal.content as Record<string, unknown> | null
 
+  // Extract signature block info from content
+  const signatureInfo = content
+    ? findSignatureBlock(content as unknown as ContentNode)
+    : null
+
+  // Build variables for content variable resolution
+  const totalAmount = proposal.total_amount
+    ? new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: (proposal.currency as string) ?? "USD",
+        minimumFractionDigits: 0,
+      }).format(parseFloat(proposal.total_amount as string))
+    : ""
+
+  const variables: Record<string, string> = {
+    client_name: (proposal.client_name as string) ?? "",
+    client_company: (proposal.client_company as string) ?? "",
+    project_name: (proposal.title as string) ?? "",
+    date: new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(new Date()),
+    total: totalAmount,
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
       {/* Header */}
@@ -139,11 +196,7 @@ export default async function ProposalViewPage({ params }: PageProps) {
           )}
           {proposal.total_amount && (
             <p className="mt-3 font-mono text-lg text-[var(--accent)] sm:text-xl">
-              {new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: (proposal.currency as string) ?? "USD",
-                minimumFractionDigits: 0,
-              }).format(parseFloat(proposal.total_amount as string))}
+              {totalAmount}
             </p>
           )}
         </div>
@@ -153,7 +206,13 @@ export default async function ProposalViewPage({ params }: PageProps) {
       <main className="flex-1">
         <div className="mx-auto max-w-[var(--content-narrow)] px-[var(--content-padding-x)] py-8 sm:py-12">
           {content ? (
-            <ProposalViewerClient content={content} />
+            <ProposalViewerClient
+              content={content}
+              variables={variables}
+              proposalId={proposal.id}
+              proposalStatus={proposal.status as string}
+              signatureInfo={signatureInfo}
+            />
           ) : (
             <p className="text-center text-[var(--text-secondary)]">
               This proposal has no content yet.

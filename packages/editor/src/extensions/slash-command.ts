@@ -122,6 +122,26 @@ export const slashCommandItems: SlashCommandItem[] = [
       editor.chain().focus().deleteRange(range).insertPricingTable().run()
     },
   },
+  {
+    title: "Variable",
+    description: "Insert a dynamic content variable",
+    icon: "{ }",
+    command: ({ editor, range }) => {
+      // Delete the slash command range, then signal to open the variable picker
+      editor.chain().focus().deleteRange(range).run()
+      // Dispatch a custom event so the editor component can open the variable picker
+      const event = new CustomEvent("propsly:open-variable-picker")
+      document.dispatchEvent(event)
+    },
+  },
+  {
+    title: "Signature",
+    description: "Signature block for client signing",
+    icon: "\u270D",
+    command: ({ editor, range }) => {
+      editor.chain().focus().deleteRange(range).insertSignatureBlock().run()
+    },
+  },
 ]
 
 export const SlashCommandPluginKey = new PluginKey("slashCommand")

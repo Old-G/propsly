@@ -7,7 +7,8 @@ import { ProposalEditor } from "@propsly/editor"
 import { ArrowLeft, Check, Loader2, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { EditorSidebar } from "./editor-sidebar"
-import { saveProposalContent, updateProposalSettings } from "@/lib/actions/editor"
+import { saveProposalContent } from "@/lib/actions/editor"
+import { uploadProposalImage } from "@/lib/actions/upload"
 import Link from "next/link"
 
 type SaveStatus = "saved" | "saving" | "unsaved" | "error"
@@ -18,6 +19,7 @@ interface ProposalEditorWrapperProps {
     title: string
     slug: string
     content: JSONContent | null
+    workspaceId: string
     clientName: string
     clientEmail: string
     clientCompany: string
@@ -65,6 +67,35 @@ export function ProposalEditorWrapper({ proposal }: ProposalEditorWrapperProps) 
     },
     [handleSave]
   )
+
+  // Handle image uploads from ImageBlock
+  useEffect(() => {
+    const handleImageUpload = async (e: Event) => {
+      const event = e as CustomEvent<{
+        file: File
+        onSuccess: (url: string) => void
+        onError: (error: string) => void
+      }>
+      const { file, onSuccess, onError } = event.detail
+
+      const formData = new FormData()
+      formData.append("file", file)
+      formData.append("workspace_id", proposal.workspaceId)
+      formData.append("proposal_id", proposal.id)
+
+      const result = await uploadProposalImage(formData)
+      if (result.error) {
+        onError(result.error)
+      } else if (result.url) {
+        onSuccess(result.url)
+      }
+    }
+
+    document.addEventListener("imageblock:upload", handleImageUpload)
+    return () => {
+      document.removeEventListener("imageblock:upload", handleImageUpload)
+    }
+  }, [proposal.id, proposal.workspaceId])
 
   // Save on unmount / page leave
   useEffect(() => {

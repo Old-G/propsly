@@ -48,6 +48,7 @@ export default async function EditProposalPage({
         currency: proposal.currency ?? "USD",
         totalAmount: proposal.total_amount ?? "",
         expiresAt: proposal.expires_at ?? "",
+        workspaceId: proposal.workspace_id,
       }}
     />
   )

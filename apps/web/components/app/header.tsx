@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { Bell, LogOut, User, Settings } from "lucide-react"
+import { LogOut, User, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -12,8 +12,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Badge } from "@/components/ui/badge"
 import { signOut } from "@/lib/actions/settings"
+import { NotificationDropdown } from "@/components/app/notification-dropdown"
+import type { NotificationItem } from "@/lib/actions/notifications"
 
 interface HeaderProps {
   user: {
@@ -26,9 +27,10 @@ interface HeaderProps {
     name: string
   }
   unreadCount: number
+  notifications: NotificationItem[]
 }
 
-export function AppHeader({ user, unreadCount }: HeaderProps) {
+export function AppHeader({ user, unreadCount, notifications }: HeaderProps) {
   const router = useRouter()
 
   async function handleSignOut() {
@@ -56,14 +58,7 @@ export function AppHeader({ user, unreadCount }: HeaderProps) {
       {/* Right side */}
       <div className="flex items-center gap-2">
         {/* Notifications */}
-        <Button variant="ghost" size="icon" className="relative">
-          <Bell className="h-4 w-4" />
-          {unreadCount > 0 && (
-            <Badge className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center p-0 text-[10px]">
-              {unreadCount > 9 ? "9+" : unreadCount}
-            </Badge>
-          )}
-        </Button>
+        <NotificationDropdown notifications={notifications} unreadCount={unreadCount} />
 
         {/* User menu */}
         <DropdownMenu>

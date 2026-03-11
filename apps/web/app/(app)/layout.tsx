@@ -2,6 +2,7 @@ import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { AppSidebar } from "@/components/app/sidebar"
 import { AppHeader } from "@/components/app/header"
+import { getNotifications } from "@/lib/actions/notifications"
 
 export default async function AppLayout({
   children,
@@ -44,6 +45,9 @@ export default async function AppLayout({
     .eq("user_id", user.id)
     .eq("read", false)
 
+  // Get recent notifications for dropdown
+  const notifications = await getNotifications()
+
   return (
     <div className="flex min-h-screen">
       <AppSidebar workspace={workspace} />
@@ -56,6 +60,7 @@ export default async function AppLayout({
           }}
           workspace={workspace}
           unreadCount={unreadCount ?? 0}
+          notifications={notifications}
         />
         <main className="flex-1">{children}</main>
       </div>

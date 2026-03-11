@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import { calculateEngagementScore } from "@/lib/engagement"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import Link from "next/link"
-import { ArrowLeft, ExternalLink, Send, Copy, Settings } from "lucide-react"
+import { ArrowLeft, BarChart3 } from "lucide-react"
+import { ProposalActions } from "@/components/proposals/proposal-actions"
 
 const STATUS_COLORS: Record<string, string> = {
   draft: "border-[var(--text-tertiary)]/30 text-[var(--text-tertiary)] bg-[var(--text-tertiary)]/10",
@@ -69,11 +70,25 @@ export default async function ProposalDetailPage({
 
   if (!proposal) notFound()
 
-  // Get view count
-  const { count: viewCount } = await supabase
-    .from("proposal_views")
-    .select("*", { count: "exact", head: true })
-    .eq("proposal_id", id)
+  // Get engagement data
+  const engagement = await calculateEngagementScore(id)
+
+  const avgTimeSeconds = engagement.views > 0
+    ? Math.round(engagement.totalTimeMs / 1000 / engagement.views)
+    : 0
+
+  function formatTime(seconds: number): string {
+    if (seconds < 60) return `${seconds}s`
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return secs > 0 ? `${mins}m ${secs}s` : `${mins}m`
+  }
+
+  function getScoreColor(score: number): string {
+    if (score >= 70) return "var(--success)"
+    if (score >= 40) return "var(--warning)"
+    return "var(--error)"
+  }
 
   return (
     <div className="p-6 space-y-6">
@@ -86,22 +101,19 @@ export default async function ProposalDetailPage({
           <ArrowLeft className="h-4 w-4" />
           Back to Proposals
         </Link>
-        <div className="flex gap-2">
-          <Button size="sm" asChild>
-            <Link href={`/proposals/${proposal.id}/edit`}>
-              Edit
-            </Link>
-          </Button>
-          <Button variant="outline" size="sm" asChild>
-            <a href={`/p/${proposal.slug}`} target="_blank" rel="noopener">
-              <ExternalLink className="h-4 w-4" />
-              Preview
-            </a>
-          </Button>
-          <Button size="sm">
-            <Send className="h-4 w-4" />
-            Share
-          </Button>
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/proposals/${proposal.id}/analytics`}
+            className="flex items-center gap-2 rounded-md border border-[var(--border-default)] px-3 py-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-hover)] transition-colors"
+          >
+            <BarChart3 className="h-4 w-4" />
+            Analytics
+          </Link>
+          <ProposalActions
+            proposalId={proposal.id}
+            proposalSlug={proposal.slug}
+            proposalTitle={proposal.title}
+          />
         </div>
       </div>
 
@@ -125,7 +137,7 @@ export default async function ProposalDetailPage({
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
         <Card>
           <CardContent className="p-4">
             <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider">Amount</p>
@@ -137,9 +149,66 @@ export default async function ProposalDetailPage({
         <Card>
           <CardContent className="p-4">
             <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider">Views</p>
-            <p className="mt-1 text-xl font-semibold">{viewCount ?? 0}</p>
+            <p className="mt-1 text-xl font-semibold">{engagement.views}</p>
           </CardContent>
         </Card>
+        <Card>
+          <CardContent className="p-4">
+            <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider">Avg. Time</p>
+            <p className="mt-1 text-xl font-semibold">{formatTime(avgTimeSeconds)}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider">Coverage</p>
+            <p className="mt-1 text-xl font-semibold">{engagement.sectionsCoveragePercent}%</p>
+          </CardContent>
+        </Card>
+        <Card
+          style={{
+            "--engagement-color": getScoreColor(engagement.score),
+          } as React.CSSProperties}
+        >
+          <CardContent className="p-4">
+            <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider">Engagement</p>
+            <div className="mt-1 flex items-center gap-3">
+              <div
+                className="relative flex h-12 w-12 items-center justify-center"
+              >
+                <svg className="h-12 w-12 -rotate-90" viewBox="0 0 48 48">
+                  <circle
+                    cx="24"
+                    cy="24"
+                    r="20"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    className="text-[var(--border-default)]"
+                  />
+                  <circle
+                    cx="24"
+                    cy="24"
+                    r="20"
+                    fill="none"
+                    stroke="var(--engagement-color)"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeDasharray={`${(engagement.score / 100) * 125.66} 125.66`}
+                  />
+                </svg>
+                <span
+                  className="absolute text-sm font-bold"
+                  style={{ color: "var(--engagement-color)" }}
+                >
+                  {engagement.score}
+                </span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-2">
         <Card>
           <CardContent className="p-4">
             <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider">Created</p>

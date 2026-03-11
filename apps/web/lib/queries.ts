@@ -42,7 +42,7 @@ export const getUserWorkspace = cache(async () => {
   const supabase = await createClient()
   const { data: workspace } = await supabase
     .from("workspaces")
-    .select("id, name, logo_url")
+    .select("id, name, logo_url, plan")
     .eq("id", profile.default_workspace_id)
     .single()
 

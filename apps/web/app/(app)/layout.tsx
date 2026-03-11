@@ -18,9 +18,9 @@ export default async function AppLayout({
     redirect("/onboarding")
   }
 
-  // Fetch workspace, unread count, and notifications in parallel
+  // Fetch workspace, unread count, notifications, and proposal count in parallel
   const supabase = await createClient()
-  const [workspace, { count: unreadCount }, notifications] = await Promise.all([
+  const [workspace, { count: unreadCount }, notifications, { count: proposalCount }] = await Promise.all([
     getUserWorkspace(),
     supabase
       .from("notifications")
@@ -28,6 +28,10 @@ export default async function AppLayout({
       .eq("user_id", user.id)
       .eq("read", false),
     getNotifications(),
+    supabase
+      .from("proposals")
+      .select("id", { count: "exact", head: true })
+      .eq("workspace_id", profile.default_workspace_id),
   ])
 
   if (!workspace) {
@@ -36,7 +40,7 @@ export default async function AppLayout({
 
   return (
     <div className="flex min-h-screen">
-      <AppSidebar workspace={workspace} />
+      <AppSidebar workspace={workspace} proposalCount={proposalCount ?? 0} />
       <div className="flex flex-1 flex-col">
         <AppHeader
           user={{
@@ -47,6 +51,7 @@ export default async function AppLayout({
           workspace={workspace}
           unreadCount={unreadCount ?? 0}
           notifications={notifications}
+          proposalCount={proposalCount ?? 0}
         />
         <main className="flex-1">{children}</main>
       </div>

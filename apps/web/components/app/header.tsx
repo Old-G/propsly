@@ -16,6 +16,7 @@ import { signOut } from "@/lib/actions/settings"
 import { NotificationDropdown } from "@/components/app/notification-dropdown"
 import { MobileNav } from "@/components/app/mobile-nav"
 import type { NotificationItem } from "@/lib/actions/notifications"
+import type { PlanType } from "@/lib/plans"
 
 interface HeaderProps {
   user: {
@@ -26,12 +27,14 @@ interface HeaderProps {
   workspace: {
     id: string
     name: string
+    plan: PlanType
   }
   unreadCount: number
   notifications: NotificationItem[]
+  proposalCount: number
 }
 
-export function AppHeader({ user, workspace, unreadCount, notifications }: HeaderProps) {
+export function AppHeader({ user, workspace, unreadCount, notifications, proposalCount }: HeaderProps) {
   const router = useRouter()
 
   async function handleSignOut() {
@@ -51,7 +54,12 @@ export function AppHeader({ user, workspace, unreadCount, notifications }: Heade
   return (
     <header className="flex h-14 items-center justify-between border-b border-[var(--border-default)] px-4 sm:px-6">
       {/* Mobile nav */}
-      <MobileNav workspaceName={workspace.name} />
+      <MobileNav
+        workspaceName={workspace.name}
+        workspaceId={workspace.id}
+        plan={workspace.plan}
+        proposalCount={proposalCount}
+      />
       <div className="hidden lg:block" />
 
       {/* Right side */}

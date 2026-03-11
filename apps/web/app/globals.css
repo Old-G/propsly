@@ -395,3 +395,28 @@ body {
     margin: 1em 0;
   }
 }
+
+/* PDF mode — hide interactive elements, optimize for print */
+.pdf-mode .proposal-tracker,
+.pdf-mode [data-tracking] {
+  display: none !important;
+}
+
+.pdf-mode .pricing-table input[type="checkbox"] {
+  pointer-events: none;
+}
+
+@media print {
+  body {
+    background: white !important;
+    color: #111 !important;
+  }
+
+  .proposal-viewer {
+    min-height: auto !important;
+  }
+
+  .proposal-viewer footer {
+    display: none !important;
+  }
+}

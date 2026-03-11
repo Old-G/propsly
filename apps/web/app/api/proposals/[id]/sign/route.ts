@@ -147,6 +147,17 @@ export async function POST(
       )
     }
 
+    // Trigger async PDF generation for the signed proposal
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3002"
+    fetch(`${siteUrl}/api/proposals/${proposalId}/pdf`, {
+      method: "GET",
+      headers: {
+        Cookie: request.headers.get("cookie") ?? "",
+      },
+    }).catch(() => {
+      // PDF generation is best-effort, don't block signing
+    })
+
     return NextResponse.json({
       success: true,
       signedAt,

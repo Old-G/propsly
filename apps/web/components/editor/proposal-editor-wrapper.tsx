@@ -4,7 +4,7 @@ import { useState, useCallback, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { type JSONContent } from "@tiptap/core"
 import { ProposalEditor } from "@propsly/editor"
-import { ArrowLeft, Check, Loader2, AlertCircle } from "lucide-react"
+import { ArrowLeft, Check, Loader2, AlertCircle, Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { EditorSidebar } from "./editor-sidebar"
 import { SaveAsTemplateModal } from "./save-as-template-modal"
@@ -156,6 +156,17 @@ export function ProposalEditorWrapper({ proposal }: ProposalEditorWrapperProps) 
           </div>
 
           <SaveAsTemplateModal proposalId={proposal.id} />
+
+          <Button
+            variant="outline"
+            size="sm"
+            asChild
+          >
+            <a href={`/api/proposals/${proposal.id}/pdf`}>
+              <Download className="h-4 w-4" />
+              PDF
+            </a>
+          </Button>
 
           <Button
             variant="outline"

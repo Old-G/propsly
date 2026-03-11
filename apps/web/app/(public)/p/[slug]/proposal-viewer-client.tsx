@@ -18,6 +18,7 @@ interface ProposalViewerClientProps {
   proposalId: string
   proposalStatus: string
   signatureInfo: SignatureInfo | null
+  isPdfMode?: boolean
 }
 
 export function ProposalViewerClient({
@@ -26,13 +27,14 @@ export function ProposalViewerClient({
   proposalId,
   proposalStatus,
   signatureInfo,
+  isPdfMode,
 }: ProposalViewerClientProps) {
   const hasSignatureBlock = signatureInfo !== null
   const isSigned = proposalStatus === "signed"
 
   return (
     <>
-      <ProposalTracker proposalId={proposalId} />
+      {!isPdfMode && <ProposalTracker proposalId={proposalId} />}
       <ProposalViewer content={content as JSONContent} variables={variables} />
       {hasSignatureBlock && (
         <div style={{ marginTop: "32px" }}>

@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import Link from "next/link"
-import { ArrowLeft, BarChart3 } from "lucide-react"
+import { ArrowLeft, BarChart3, Download } from "lucide-react"
 import { ProposalActions } from "@/components/proposals/proposal-actions"
 
 const STATUS_COLORS: Record<string, string> = {
@@ -102,6 +102,13 @@ export default async function ProposalDetailPage({
           Back to Proposals
         </Link>
         <div className="flex items-center gap-2">
+          <a
+            href={`/api/proposals/${proposal.id}/pdf`}
+            className="flex items-center gap-2 rounded-md border border-[var(--border-default)] px-3 py-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-hover)] transition-colors"
+          >
+            <Download className="h-4 w-4" />
+            PDF
+          </a>
           <Link
             href={`/proposals/${proposal.id}/analytics`}
             className="flex items-center gap-2 rounded-md border border-[var(--border-default)] px-3 py-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-hover)] transition-colors"

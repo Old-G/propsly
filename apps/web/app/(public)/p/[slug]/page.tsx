@@ -45,6 +45,7 @@ function findSignatureBlock(node: ContentNode): SignatureInfo | null {
 
 interface PageProps {
   params: Promise<{ slug: string }>
+  searchParams: Promise<{ pdf?: string }>
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -128,8 +129,10 @@ function isExpired(expiresAt: string | null): boolean {
   return new Date(expiresAt) < new Date()
 }
 
-export default async function ProposalViewPage({ params }: PageProps) {
+export default async function ProposalViewPage({ params, searchParams }: PageProps) {
   const { slug } = await params
+  const { pdf } = await searchParams
+  const isPdfMode = pdf === "true"
   const supabase = await createClient()
 
   const { data: proposal } = await supabase
@@ -142,8 +145,8 @@ export default async function ProposalViewPage({ params }: PageProps) {
     notFound()
   }
 
-  // Draft proposals are not publicly viewable
-  if (proposal.status === "draft") {
+  // Draft proposals are not publicly viewable (skip check in PDF mode for internal rendering)
+  if (proposal.status === "draft" && !isPdfMode) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
         <div className="mb-4 text-6xl">
@@ -207,9 +210,9 @@ export default async function ProposalViewPage({ params }: PageProps) {
     )
   }
 
-  // --- Password Protection ---
+  // --- Password Protection (skip in PDF mode) ---
   const hasPassword = Boolean(proposal.password_hash)
-  if (hasPassword) {
+  if (hasPassword && !isPdfMode) {
     const cookieStore = await cookies()
     const accessCookie = cookieStore.get(`proposal_access_${slug}`)
     if (!accessCookie?.value) {
@@ -223,10 +226,12 @@ export default async function ProposalViewPage({ params }: PageProps) {
     }
   }
 
-  // Record the view (fire and forget — don't block rendering)
-  recordView(proposal.id).catch(() => {
-    // Silently ignore view tracking errors
-  })
+  // Record the view (fire and forget — don't block rendering, skip in PDF mode)
+  if (!isPdfMode) {
+    recordView(proposal.id).catch(() => {
+      // Silently ignore view tracking errors
+    })
+  }
 
   // --- Workspace Branding ---
   const workspace = await getWorkspaceBranding(proposal.workspace_id as string)
@@ -273,7 +278,7 @@ export default async function ProposalViewPage({ params }: PageProps) {
 
   return (
     <div
-      className="proposal-viewer flex min-h-screen flex-col"
+      className={`proposal-viewer flex min-h-screen flex-col ${isPdfMode ? "pdf-mode" : ""}`}
       style={brandStyles}
     >
       {/* Header */}
@@ -378,6 +383,7 @@ export default async function ProposalViewPage({ params }: PageProps) {
               proposalId={proposal.id}
               proposalStatus={proposal.status as string}
               signatureInfo={signatureInfo}
+              isPdfMode={isPdfMode}
             />
           ) : (
             <p className="text-center text-[var(--text-secondary)]">

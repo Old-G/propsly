@@ -45,15 +45,15 @@ export function WelcomeHero({ user }: WelcomeHeroProps) {
           Welcome to Propsly, {firstName}!
         </h1>
         <p className="text-[var(--text-secondary)] leading-relaxed">
-          Thanks for believing in us. We&apos;re building something special and
-          you&apos;re one of the first people on board. Your account is ready.
-          When we launch, you&apos;ll get full access — no extra steps.
-          We&apos;ll email you at{" "}
-          <span className="text-[var(--text-primary)] font-medium">
-            {user.email}
-          </span>
-          .
+          Your account is ready. Head to the dashboard to create your first
+          proposal — it only takes a few minutes.
         </p>
+        <a
+          href={process.env.NEXT_PUBLIC_APP_URL ?? "https://app.propsly.org"}
+          className="btn-primary inline-block mt-4"
+        >
+          Go to Dashboard &rarr;
+        </a>
       </div>
 
       <div
@@ -61,7 +61,7 @@ export function WelcomeHero({ user }: WelcomeHeroProps) {
         style={{ backgroundColor: "var(--bg-surface)" }}
       >
         <h2 className="text-sm font-medium mb-4 text-[var(--text-primary)]">
-          While you wait:
+          Explore:
         </h2>
         <ul className="space-y-1">
           {links.map((link) => (

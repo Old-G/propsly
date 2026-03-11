@@ -1,8 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
+import { APP_URL } from "@/lib/utils";
 import { Glow } from "@/components/shared/glow";
 
 export function FinalCTA() {
@@ -26,14 +26,14 @@ export function FinalCTA() {
           className="text-lg mb-10"
           style={{ color: "var(--text-secondary)" }}
         >
-          Create your account now. When Propsly launches, you&apos;ll be the
-          first in — no extra steps.
+          Create beautiful proposals in minutes. Free, open-source, and
+          ready to use — no credit card required.
         </motion.p>
         <motion.div variants={fadeInUp} className="relative inline-block">
           <Glow size="md" className="opacity-50" />
-          <Link href="/signup" className="btn-primary relative text-base px-10 py-4">
-            Sign Up Free &rarr;
-          </Link>
+          <a href={`${APP_URL}/signup`} className="btn-primary relative text-base px-10 py-4">
+            Try Propsly Free &rarr;
+          </a>
         </motion.div>
       </motion.div>
     </section>

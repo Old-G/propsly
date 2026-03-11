@@ -1,11 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { staggerContainer, staggerItem } from "@/lib/animations";
 import { Glow } from "@/components/shared/glow";
-import { cn } from "@/lib/utils";
+import { cn, APP_URL } from "@/lib/utils";
 
 const tiers = [
   {
@@ -23,7 +22,7 @@ const tiers = [
     period: "/month",
     features: ["3 proposals", "1 user", "Propsly watermark"],
     cta: "Sign Up",
-    href: "/signup",
+    href: `${APP_URL}/signup`,
     variant: "secondary" as const,
   },
   {
@@ -32,7 +31,7 @@ const tiers = [
     period: "/user/mo",
     features: ["Unlimited", "AI features", "Custom branding"],
     cta: "Sign Up",
-    href: "/signup",
+    href: `${APP_URL}/signup`,
     popular: true,
     variant: "primary" as const,
   },
@@ -124,9 +123,9 @@ export function PricingPreview() {
             </ul>
 
             {tier.variant === "primary" ? (
-              <Link href={tier.href} className="btn-primary w-full justify-center text-sm">
+              <a href={tier.href} className="btn-primary w-full justify-center text-sm">
                 {tier.cta}
-              </Link>
+              </a>
             ) : tier.variant === "disabled" ? (
               <button
                 disabled
@@ -135,9 +134,9 @@ export function PricingPreview() {
                 {tier.cta}
               </button>
             ) : (
-              <Link href={tier.href} className="btn-secondary w-full justify-center text-sm">
+              <a href={tier.href} className="btn-secondary w-full justify-center text-sm">
                 {tier.cta}
-              </Link>
+              </a>
             )}
           </motion.div>
         ))}

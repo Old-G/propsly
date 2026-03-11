@@ -8,6 +8,7 @@ import { getCompetitor, getAllCompetitorSlugs } from "@/lib/competitors";
 import { breadcrumbSchema } from "@/lib/structured-data";
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://propsly.org";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.propsly.org";
 
 interface PageProps {
   params: Promise<{ competitor: string }>;
@@ -138,9 +139,9 @@ export default async function CompetitorPage({ params }: PageProps) {
             Get started with Propsly for free. No credit card required.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <Link href="/signup" className="btn-primary">
+            <a href={`${APP_URL}/signup`} className="btn-primary">
               Get Started Free &rarr;
-            </Link>
+            </a>
             <a
               href="https://github.com/Old-G/propsly"
               target="_blank"

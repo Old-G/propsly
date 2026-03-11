@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { APP_URL } from "@/lib/utils";
 
 const navLinks = [
   { href: "/blog", label: "Blog" },
@@ -49,9 +50,9 @@ export function Header() {
               {link.label}
             </Link>
           ))}
-          <Link href="/signup" className="btn-primary text-sm !py-2 !px-5">
-            Sign Up &rarr;
-          </Link>
+          <a href={`${APP_URL}/signup`} className="btn-primary text-sm !py-2 !px-5">
+            Get Started &rarr;
+          </a>
         </nav>
 
         {/* Mobile hamburger */}
@@ -97,13 +98,13 @@ export function Header() {
               {link.label}
             </Link>
           ))}
-          <Link
-            href="/signup"
+          <a
+            href={`${APP_URL}/signup`}
             className="btn-primary text-sm !py-2 !px-5 w-fit"
             onClick={() => setMobileOpen(false)}
           >
-            Sign Up &rarr;
-          </Link>
+            Get Started &rarr;
+          </a>
         </nav>
       )}
     </header>

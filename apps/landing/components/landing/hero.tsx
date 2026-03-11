@@ -1,8 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
+import { APP_URL } from "@/lib/utils";
 import { Glow } from "@/components/shared/glow";
 import { HeroAnimation } from "./hero-animation";
 
@@ -38,9 +38,9 @@ export function Hero() {
         </motion.p>
 
         <motion.div variants={fadeInUp} className="flex flex-wrap items-center justify-center gap-4">
-          <Link href="/signup" className="btn-primary">
+          <a href={`${APP_URL}/signup`} className="btn-primary">
             Get Started Free &rarr;
-          </Link>
+          </a>
           <a
             href="https://github.com/Old-G/propsly"
             target="_blank"

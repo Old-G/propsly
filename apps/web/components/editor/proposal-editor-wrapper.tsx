@@ -162,7 +162,7 @@ export function ProposalEditorWrapper({ proposal }: ProposalEditorWrapperProps) 
             size="sm"
             asChild
           >
-            <a href={`/api/proposals/${proposal.id}/pdf`}>
+            <a href={`/p/${proposal.slug}?pdf=true`} target="_blank" rel="noopener">
               <Download className="h-4 w-4" />
               PDF
             </a>

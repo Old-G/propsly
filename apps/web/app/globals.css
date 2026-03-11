@@ -407,6 +407,11 @@ body {
 }
 
 @media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
   body {
     background: white !important;
     color: #111 !important;
@@ -418,5 +423,26 @@ body {
 
   .proposal-viewer footer {
     display: none !important;
+  }
+
+  .proposal-viewer header {
+    border-bottom: 1px solid #e5e7eb !important;
+  }
+
+  /* Avoid page breaks inside blocks */
+  .tiptap-editor h1,
+  .tiptap-editor h2,
+  .tiptap-editor h3,
+  .tiptap-editor table,
+  .tiptap-editor blockquote,
+  .tiptap-editor img {
+    break-inside: avoid;
+  }
+
+  /* Keep headings with their content */
+  .tiptap-editor h1,
+  .tiptap-editor h2,
+  .tiptap-editor h3 {
+    break-after: avoid;
   }
 }

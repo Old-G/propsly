@@ -2,15 +2,19 @@ import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { generatePdfFromUrl } from "@/lib/services/pdf"
 
+/**
+ * Server-side PDF generation via Gotenberg (Docker).
+ * Used in production self-hosted deployments.
+ * For dev/cloud, use client-side print (/p/[slug]?pdf=true).
+ */
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id: proposalId } = await params
     const supabase = await createClient()
 
-    // Verify user is authenticated
     const {
       data: { user },
     } = await supabase.auth.getUser()
@@ -19,7 +23,6 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Fetch proposal
     const { data: proposal, error } = await supabase
       .from("proposals")
       .select("id, title, slug, status, signed_pdf_url")
@@ -30,12 +33,10 @@ export async function GET(
       return NextResponse.json({ error: "Proposal not found" }, { status: 404 })
     }
 
-    // If a signed PDF already exists, redirect to it
     if (proposal.signed_pdf_url) {
       return NextResponse.redirect(proposal.signed_pdf_url)
     }
 
-    // Build the PDF render URL
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3002"
     const pdfUrl = `${siteUrl}/p/${proposal.slug}?pdf=true`
 
@@ -43,7 +44,7 @@ export async function GET(
 
     const filename = `${proposal.title.replace(/[^a-zA-Z0-9-_ ]/g, "").trim() || "proposal"}.pdf`
 
-    // If proposal is signed, upload to Supabase Storage for permanent storage
+    // Store signed PDFs permanently
     if (proposal.status === "signed") {
       const storagePath = `proposals/${proposalId}/signed.pdf`
       const { error: uploadError } = await supabase.storage
@@ -78,16 +79,9 @@ export async function GET(
   } catch (err) {
     console.error("PDF generation error:", err)
 
-    const message = err instanceof Error ? err.message : "PDF generation failed"
-    const isGotenbergError = message.includes("Gotenberg") || message.includes("ECONNREFUSED")
-
     return NextResponse.json(
-      {
-        error: isGotenbergError
-          ? "PDF service is not available. Make sure Gotenberg is running (docker compose up gotenberg)."
-          : "Failed to generate PDF",
-      },
-      { status: isGotenbergError ? 503 : 500 }
+      { error: "PDF service unavailable. Use browser print instead: /p/[slug]?pdf=true" },
+      { status: 503 }
     )
   }
 }

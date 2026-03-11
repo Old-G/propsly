@@ -103,7 +103,9 @@ export default async function ProposalDetailPage({
         </Link>
         <div className="flex items-center gap-2">
           <a
-            href={`/api/proposals/${proposal.id}/pdf`}
+            href={`/p/${proposal.slug}?pdf=true`}
+            target="_blank"
+            rel="noopener"
             className="flex items-center gap-2 rounded-md border border-[var(--border-default)] px-3 py-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-hover)] transition-colors"
           >
             <Download className="h-4 w-4" />

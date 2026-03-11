@@ -4,6 +4,7 @@ import type { Metadata } from "next"
 import { createClient } from "@/lib/supabase/server"
 import { ProposalViewerClient } from "./proposal-viewer-client"
 import { PasswordGate } from "./password-gate"
+import { PdfAutoPrint } from "./pdf-auto-print"
 
 interface ContentNode {
   type: string
@@ -281,6 +282,7 @@ export default async function ProposalViewPage({ params, searchParams }: PagePro
       className={`proposal-viewer flex min-h-screen flex-col ${isPdfMode ? "pdf-mode" : ""}`}
       style={brandStyles}
     >
+      {isPdfMode && <PdfAutoPrint />}
       {/* Header */}
       <header className="border-b border-[var(--border-default)] bg-[var(--bg-primary)]">
         <div className="mx-auto max-w-[var(--viewer-max-width,800px)] px-[var(--content-padding-x)] py-6 sm:py-8">

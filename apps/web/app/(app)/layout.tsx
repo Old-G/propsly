@@ -1,19 +1,64 @@
-export default function AppLayout({
+import { redirect } from "next/navigation"
+import { createClient } from "@/lib/supabase/server"
+import { AppSidebar } from "@/components/app/sidebar"
+import { AppHeader } from "@/components/app/header"
+
+export default async function AppLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) redirect("/login")
+
+  // Get profile with default workspace
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name, avatar_url, default_workspace_id")
+    .eq("id", user.id)
+    .single()
+
+  if (!profile?.default_workspace_id) {
+    redirect("/onboarding")
+  }
+
+  // Get workspace
+  const { data: workspace } = await supabase
+    .from("workspaces")
+    .select("id, name, logo_url")
+    .eq("id", profile.default_workspace_id)
+    .single()
+
+  if (!workspace) {
+    redirect("/onboarding")
+  }
+
+  // Get unread notification count
+  const { count: unreadCount } = await supabase
+    .from("notifications")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", user.id)
+    .eq("read", false)
+
   return (
     <div className="flex min-h-screen">
-      {/* Sidebar placeholder */}
-      <aside className="hidden w-64 border-r border-[var(--border-default)] bg-[var(--bg-surface)] lg:block">
-        <div className="p-6">
-          <h2 className="text-lg font-semibold">Propsly</h2>
-        </div>
-      </aside>
-      <main className="flex-1">
-        {children}
-      </main>
+      <AppSidebar workspace={workspace} />
+      <div className="flex flex-1 flex-col">
+        <AppHeader
+          user={{
+            email: user.email ?? "",
+            fullName: profile.full_name ?? "",
+            avatarUrl: profile.avatar_url ?? user.user_metadata?.avatar_url ?? "",
+          }}
+          workspace={workspace}
+          unreadCount={unreadCount ?? 0}
+        />
+        <main className="flex-1">{children}</main>
+      </div>
     </div>
   )
 }

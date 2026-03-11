@@ -310,3 +310,88 @@ body {
 .tiptap-editor .ProseMirror-gapcursor::after {
   border-top: 1px solid var(--text-primary);
 }
+
+/* ===== Public Proposal Viewer ===== */
+.proposal-viewer {
+  --viewer-max-width: 800px;
+}
+
+/* Workspace branding color overrides */
+.proposal-viewer[style*="--brand-accent"] .btn-primary {
+  background: var(--brand-accent);
+  box-shadow: 0 0 20px var(--brand-accent-glow);
+}
+
+.proposal-viewer[style*="--brand-accent"] .btn-primary:hover {
+  background: var(--brand-accent-hover);
+  box-shadow: 0 0 40px var(--brand-accent-glow), 0 0 80px var(--brand-accent-glow);
+}
+
+/* Responsive typography for viewer content */
+.proposal-viewer .tiptap-editor h1 {
+  font-size: 1.75em;
+  margin: 1.25em 0 0.5em;
+}
+
+.proposal-viewer .tiptap-editor h2 {
+  font-size: 1.35em;
+  margin: 1em 0 0.4em;
+}
+
+.proposal-viewer .tiptap-editor h3 {
+  font-size: 1.15em;
+}
+
+@media (min-width: 640px) {
+  .proposal-viewer .tiptap-editor h1 {
+    font-size: 2em;
+    margin: 1.5em 0 0.5em;
+  }
+
+  .proposal-viewer .tiptap-editor h2 {
+    font-size: 1.5em;
+    margin: 1.25em 0 0.5em;
+  }
+
+  .proposal-viewer .tiptap-editor h3 {
+    font-size: 1.25em;
+  }
+}
+
+/* Better mobile spacing for viewer images */
+.proposal-viewer .tiptap-editor img {
+  margin: 1em 0;
+}
+
+/* Ensure tables scroll horizontally on mobile */
+.proposal-viewer .tiptap-editor table {
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Better code block scrolling on mobile */
+.proposal-viewer .tiptap-editor pre {
+  padding: 12px 16px;
+  font-size: 13px;
+}
+
+@media (min-width: 640px) {
+  .proposal-viewer .tiptap-editor pre {
+    padding: 16px 20px;
+    font-size: 14px;
+  }
+}
+
+/* Blockquote mobile spacing */
+.proposal-viewer .tiptap-editor blockquote {
+  padding-left: 12px;
+  margin: 0.75em 0;
+}
+
+@media (min-width: 640px) {
+  .proposal-viewer .tiptap-editor blockquote {
+    padding-left: 16px;
+    margin: 1em 0;
+  }
+}

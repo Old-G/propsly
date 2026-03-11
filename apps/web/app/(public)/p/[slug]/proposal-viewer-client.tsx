@@ -1,6 +1,7 @@
 "use client"
 
 import { ProposalViewer, SignatureBlockViewer } from "@propsly/editor"
+import { ProposalTracker } from "@/components/tracking/proposal-tracker"
 import type { JSONContent } from "@tiptap/core"
 import type { SignatureType } from "@propsly/editor"
 
@@ -31,6 +32,7 @@ export function ProposalViewerClient({
 
   return (
     <>
+      <ProposalTracker proposalId={proposalId} />
       <ProposalViewer content={content as JSONContent} variables={variables} />
       {hasSignatureBlock && (
         <div style={{ marginTop: "32px" }}>
